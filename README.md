@@ -1,1 +1,16 @@
-#BeholderRPGFinder-Mobile
+# BeholderRPGFinder-Mobile
+
+Instalção do Expo
+----------------------------------------------------------------------------------------------------------------
+
+npx create-expo-app my-app
+
+npx expo install react-native-web react-dom @expo/metro-runtime
+
+----------------------------------------------------------------------------------------------------------------
+Rodar o Projeto 
+----------------------------------------------------------------------------------------------------------------
+
+cd rpg
+
+npm start ou npm run web
