@@ -13,7 +13,7 @@ export const Home = () => {
             >
                 
                 <View style={styles.content}>
-                    
+                   
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button}>
                             <Text style={styles.buttonText}>Entrar</Text>
@@ -38,11 +38,11 @@ const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
         width: '100%', 
-        height: '100%',
+        height: '100%', 
     },
     content: {
         flex: 1,
-        justifyContent: 'flex-end', 
+        justifyContent: 'flex-end',
     },
     buttonContainer: {
         alignItems: 'center',
