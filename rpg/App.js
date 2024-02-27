@@ -1,15 +1,13 @@
 import React from 'react';
-import { StatusBar } from 'react-native';
-import { View, Text } from 'react-native';
-import { Home } from './screens/Home/Index';
-
+import { StatusBar, View } from 'react-native';
+/* import Home from './screens/Home'; */
+import Login from './screens/Login';
 
 export default function App() {
   return (
     <View style={{ flex: 1 }}>
-      <Home />
+      <Login />
       <StatusBar style='auto' />
     </View>
   );
 }
-
