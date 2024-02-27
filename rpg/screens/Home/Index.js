@@ -1,38 +1,30 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { Video } from 'expo-av';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 
 export const Home = () => {
     return (
         <View style={styles.container}>
             
-            <Video
-                source={require('../../img/rpg.mp4')} 
-                style={styles.backgroundVideo}
-                isMuted={true}
-                shouldPlay={true}
-                isLooping
+            
+            <ImageBackground
+                source={require('../../img/Fundo.png')} 
+                style={styles.backgroundImage}
                 resizeMode="cover"
-            />
+            >
+                
+                <View style={styles.content}>
+                    
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.button}>
+                            <Text style={styles.buttonText}>Entrar</Text>
+                        </TouchableOpacity>
 
-            
-            <View style={styles.logoContainer}>
-                <Image
-                    source={require('../../img/Logo.png')} 
-                    style={styles.logo}
-                />
-            </View>
-
-            
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Entrar</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Inscrever</Text>
-                </TouchableOpacity>
-            </View>
+                        <TouchableOpacity style={styles.button}>
+                            <Text style={styles.buttonText}>Inscrever</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </ImageBackground>
         </View>
     );
 };
@@ -43,28 +35,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    backgroundVideo: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-    },
-    logoContainer: {
+    backgroundImage: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        width: '100%', 
+        height: '100%',
+    },
+    content: {
+        flex: 1,
+        justifyContent: 'flex-end', 
     },
     buttonContainer: {
-        justifyContent: 'flex-end',
         alignItems: 'center',
         paddingBottom: 20, 
         marginBottom: 50, 
-    },
-    logo: {
-        width: 100, 
-        height: 100, 
-        marginBottom: 20,
     },
     button: {
         backgroundColor: 'transparent',
@@ -77,7 +60,7 @@ const styles = StyleSheet.create({
         width: 330,
     },
     buttonText: {
-        color: '#FFFFFF',
+        color: '#8B0000',
         textAlign: 'center',
         fontSize: 16,
         fontWeight: 'bold',
