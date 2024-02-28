@@ -34,7 +34,8 @@ export default function DrawerRoutes() {
                 component={Inicial} 
                 options={{
                     drawerIcon: ({ color, size }) => <Feather name='log-out' color={color} size={size} />,
-                    drawerLabel: 'Sair' 
+                    drawerLabel: 'Sair',
+                    headerShown: false 
                 }}
             />
         </Drawer.Navigator>

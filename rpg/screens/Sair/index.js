@@ -12,11 +12,7 @@ const Inicial = () => {
                 <View style={styles.content}>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button}>
-                            <Text style={styles.buttonText}>Entrar</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.button}>
-                            <Text style={styles.buttonText}>Inscrever</Text>
+                            <Text style={styles.buttonText}>Sair</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -24,6 +20,7 @@ const Inicial = () => {
         </View>
     );
 };
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
