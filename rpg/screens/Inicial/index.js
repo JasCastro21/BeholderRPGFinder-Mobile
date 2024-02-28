@@ -1,7 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const Inicial = () => {
+    const navigation = useNavigation();
+
+    const handleEntrarPress = () => {
+        navigation.navigate('Feed'); 
+    };
+
     return (
         <View style={styles.container}>
             <ImageBackground
@@ -11,7 +18,7 @@ const Inicial = () => {
             >
                 <View style={styles.content}>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button}>
+                        <TouchableOpacity style={styles.button} onPress={handleEntrarPress}>
                             <Text style={styles.buttonText}>Entrar</Text>
                         </TouchableOpacity>
 
@@ -24,6 +31,7 @@ const Inicial = () => {
         </View>
     );
 };
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

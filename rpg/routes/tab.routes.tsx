@@ -1,31 +1,51 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Feather } from '@expo/vector-icons';
 
-import Feed from '../screens/Feed';
-import Notificacao from '../screens/Notificacao';
+import TabRoutes from './tab.routes';
+import Perfil from '../screens/Perfil';
+import Inicial from '../screens/Inicial';
 
-const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
-export default function TabRoutes() {
+export default function DrawerRoutes() {
     return (
-        <Tab.Navigator screenOptions={{ headerShown: false }}>
-            <Tab.Screen
-                name="Feed"
-                component={Feed}
+        <Drawer.Navigator 
+            screenOptions={{
+                title: ' ',
+                drawerStyle: {
+                    backgroundColor: '#8B0000', // Defina a cor de fundo desejada aqui
+                },
+                // Outras opções globais do screenOptions
+            }}
+        >
+            <Drawer.Screen 
+                name='Home'  
+                component={TabRoutes} 
                 options={{
-                    tabBarIcon: ({ color, size }) => <Feather name='home' color={color} size={size} />,
-                    tabBarLabel: 'Feed'
+                    drawerIcon: ({ color, size }) => <Feather name='home' color={color} size={size} />,
+                    drawerLabel: 'Início' 
                 }}
             />
-            <Tab.Screen
-                name="Notificações"
-                component={Notificacao}
+
+            <Drawer.Screen 
+                name='Perfil'  
+                component={Perfil} 
                 options={{
-                    tabBarIcon: ({ color, size }) => <Feather name='bell' color={color} size={size} />,
-                    tabBarLabel: 'Notificações' 
+                    drawerIcon: ({ color, size }) => <Feather name='user' color={color} size={size} />,
+                    drawerLabel: 'Meu Perfil',
                 }}
             />
-        </Tab.Navigator>
+
+            <Drawer.Screen 
+                name='Sair'  
+                component={Inicial} 
+                options={{
+                    drawerIcon: ({ color, size }) => <Feather name='log-out' color={color} size={size} />,
+                    drawerLabel: 'Sair',
+                    headerShown: false 
+                }}
+            />
+        </Drawer.Navigator>
     );
 }
