@@ -2,7 +2,6 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 
-
 import Feed from '../screens/Feed';
 import Notificacao from '../screens/Notificacao';
 

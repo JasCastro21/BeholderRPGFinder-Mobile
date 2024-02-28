@@ -1,26 +1,18 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 
-export const Home = () => {
+const Inicial = () => {
     return (
         <View style={styles.container}>
-            
-            
             <ImageBackground
                 source={require('../../img/Fundo.png')} 
                 style={styles.backgroundImage}
                 resizeMode="cover"
             >
-                
                 <View style={styles.content}>
-                   
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button}>
-                            <Text style={styles.buttonText}>Entrar</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.button}>
-                            <Text style={styles.buttonText}>Inscrever</Text>
+                            <Text style={styles.buttonText}>Sair</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -66,3 +58,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
+
+export default Inicial;
