@@ -1,54 +1,61 @@
+import React from 'react';
 import { StyleSheet, View, Image, Text, ScrollView } from 'react-native';
+import Slide from '../../components/Slide';
 
 export function Feed (){
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.postContainer}>
-        <View style={styles.headerContainer}>
-          <Image
-            source={{ uri: 'your_profile_image_url' }}
-            style={styles.profilePic}
-          />
-          <Text style={styles.username}>Chuu do Critei | @chuullo2</Text>
-          <Text style={styles.timestamp}>1h</Text>
-        </View>
-        <Text style={styles.postText}>
-          A nova soundtrack do meu RPG tá fino do fino, amo as produções do @jvic
-        </Text>
-        <Image
-          source={{ uri: 'your_post_image_url' }}
-          style={styles.postImage}
-        />
-        <View style={styles.footerContainer}>
-          <Text style={styles.footerText}>12</Text>
-          <Text style={styles.footerText}>1</Text>
-          <Text style={styles.footerText}>256</Text>
-        </View>
-      </View>
+    <View>
+     
+      <Slide />
 
-      <View style={styles.postContainer}>
-        <View style={styles.headerContainer}>
+      <ScrollView style={styles.container}>
+        <View style={styles.postContainer}>
+          <View style={styles.headerContainer}>
+            <Image
+              source={{ uri: 'your_profile_image_url' }}
+              style={styles.profilePic}
+            />
+            <Text style={styles.username}>Chuu do Critei | @chuullo2</Text>
+            <Text style={styles.timestamp}>1h</Text>
+          </View>
+          <Text style={styles.postText}>
+            A nova soundtrack do meu RPG tá fino do fino, amo as produções do @jvic
+          </Text>
           <Image
-            source={{ uri: 'your_profile_image_url' }}
-            style={styles.profilePic}
+            source={{ uri: 'your_post_image_url' }}
+            style={styles.postImage}
           />
-          <Text style={styles.username}>Larissa | @solaris1</Text>
-          <Text style={styles.timestamp}>12h</Text>
+          <View style={styles.footerContainer}>
+            <Text style={styles.footerText}>12</Text>
+            <Text style={styles.footerText}>1</Text>
+            <Text style={styles.footerText}>256</Text>
+          </View>
         </View>
-        <Text style={styles.postText}>
-          Arte para @chuullo2, um monstro da campanha dela de D&D, a Hidra Falsa.
-        </Text>
-        <Image
-          source={{ uri: 'your_artwork_image_url' }}
-          style={styles.postImage}
-        />
-        <View style={styles.footerContainer}>
-          <Text style={styles.footerText}>12</Text>
-          <Text style={styles.footerText}>1</Text>
-          <Text style={styles.footerText}>256</Text>
+
+        <View style={styles.postContainer}>
+          <View style={styles.headerContainer}>
+            <Image
+              source={{ uri: 'your_profile_image_url' }}
+              style={styles.profilePic}
+            />
+            <Text style={styles.username}>Larissa | @solaris1</Text>
+            <Text style={styles.timestamp}>12h</Text>
+          </View>
+          <Text style={styles.postText}>
+            Arte para @chuullo2, um monstro da campanha dela de D&D, a Hidra Falsa.
+          </Text>
+          <Image
+            source={{ uri: 'your_artwork_image_url' }}
+            style={styles.postImage}
+          />
+          <View style={styles.footerContainer}>
+            <Text style={styles.footerText}>12</Text>
+            <Text style={styles.footerText}>1</Text>
+            <Text style={styles.footerText}>256</Text>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
