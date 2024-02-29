@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Slide from '../../components/Slide/index2';
 
 const notificationsData = [
   {
@@ -18,10 +19,12 @@ const notificationsData = [
     content: 'Acho que vou comprar uma arte pro o monstro da minha próxima sessão, só não sei com quem ainda...',
     icon: 'favorite',
   },
-  // ... Adicione mais notificações aqui se necessário
+  
 ];
 
 const Notificacao = () => {
+
+  <Slide />
   const renderItem = ({ item }) => (
     <View style={styles.notificationItem}>
       <Icon name={item.icon} size={24} color={item.type === 'like' ? 'red' : 'black'} />
@@ -35,12 +38,13 @@ const Notificacao = () => {
 
   return (
     <View style={styles.container}>
+       <Slide />
       <FlatList
         data={notificationsData}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
-      {/* Adicionar barra de navegação inferior aqui se necessário */}
+  
     </View>
   );
 };
@@ -63,7 +67,7 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: 'bold',
   },
-  // Estilos para barra de navegação inferior e outros elementos podem ser adicionados aqui
+ 
 });
 
 export default Notificacao;
