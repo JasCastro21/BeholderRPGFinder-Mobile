@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons';
 
 import Feed from '../screens/Feed';
 import Notificacao from '../screens/Notificacao';
+import Chat from '../screens/Chat';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,10 +13,10 @@ export default function TabRoutes() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#FFFFFF', 
-        tabBarInactiveTintColor: '#FFFFFF', 
+        tabBarActiveTintColor: '#FFFFFF',
+        tabBarInactiveTintColor: '#FFFFFF',
         tabBarStyle: {
-          backgroundColor: '#8B0000', 
+          backgroundColor: '#8B0000',
         },
       }}
     >
@@ -26,6 +27,7 @@ export default function TabRoutes() {
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" color={color} size={size} />
           ),
+          tabBarLabel: () => null,
         }}
       />
       <Tab.Screen
@@ -35,6 +37,17 @@ export default function TabRoutes() {
           tabBarIcon: ({ color, size }) => (
             <Feather name="bell" color={color} size={size} />
           ),
+          tabBarLabel: () => null,
+        }}
+      />
+      <Tab.Screen
+        name="Chat"
+        component={Chat}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="message-circle" color={color} size={size} />
+          ),
+          tabBarLabel: () => null,
         }}
       />
     </Tab.Navigator>
