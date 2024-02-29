@@ -5,11 +5,11 @@ import Icon from 'react-native-vector-icons/FontAwesome'; // Importe o ícone da
 const SearchBar = () => {
   return (
     <View style={styles.container}>
-      <Icon name="search" size={20} color="#999" style={styles.icon} />
+      <Icon name="search" size={20} color="#8B0000" style={styles.icon} />
       <TextInput
         style={styles.input}
-        placeholder="Search..."
-        placeholderTextColor="#999"
+        placeholder="Pesquisar..."
+        placeholderTextColor="#666666"
       />
     </View>
   );
@@ -19,11 +19,13 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#D9D9D9',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 10,
     margin: 10,
+    borderColor: '#8B0000',
+    borderWidth: 2, 
   },
   input: {
     flex: 1,
