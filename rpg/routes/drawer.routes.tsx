@@ -1,12 +1,23 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Feather } from '@expo/vector-icons';
+import { Image } from 'react-native';
 
 import TabRoutes from './tab.routes';
 import Perfil from '../screens/Perfil';
 import Inicial from '../screens/Inicial';
 
 const Drawer = createDrawerNavigator();
+
+const CustomHeaderTitle = () => {
+    return (
+        <Image
+            source={require('../img/Logo2.png')} 
+            style={{ width: 120, height: 40 }} 
+            resizeMode="contain" 
+        />
+    );
+}
 
 export default function DrawerRoutes() {
     return (
@@ -16,20 +27,17 @@ export default function DrawerRoutes() {
                 headerStyle: {
                     backgroundColor: '#8B0000',
                 },
-                headerTintColor: 'white', // Isso define a cor do texto e ícones no cabeçalho, incluindo o ícone do menu
+                headerTintColor: 'white',
+                headerTitleAlign: 'center',
+                headerTitle: () => <CustomHeaderTitle />,
                 drawerIcon: ({ focused, size }) => (
                     <Feather name={focused ? 'menu' : 'menu'} size={size} color='white' />
                 ),
+                drawerActiveBackgroundColor: '#8B0000', 
+                drawerActiveTintColor: 'white', 
+                drawerInactiveTintColor: 'gray', 
             }}
         >
-            <Drawer.Screen 
-                name='Home'  
-                component={TabRoutes} 
-                options={{
-                    drawerIcon: ({ color, size }) => <Feather name='home' color={color} size={size} />,
-                    drawerLabel: 'Início'
-                }}
-            />
 
             <Drawer.Screen 
                 name='Perfil'  
@@ -37,6 +45,15 @@ export default function DrawerRoutes() {
                 options={{
                     drawerIcon: ({ color, size }) => <Feather name='user' color={color} size={size} />,
                     drawerLabel: 'Meu Perfil',
+                }}
+            />
+            
+            <Drawer.Screen 
+                name='Home'  
+                component={TabRoutes} 
+                options={{
+                    drawerIcon: ({ color, size }) => <Feather name='home' color={color} size={size} />,
+                    drawerLabel: 'Início'
                 }}
             />
 
