@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import Feed from '../screens/Feed';
 import Notificacao from '../screens/Notificacao';
 import Chat from '../screens/Chat';
+import Pesquisar from '../screens/Pesquisar';
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +37,16 @@ export default function TabRoutes() {
         options={{
           tabBarIcon: ({ color, size }) => (
             <Feather name="bell" color={color} size={size} />
+          ),
+          tabBarLabel: () => null,
+        }}
+      />
+      <Tab.Screen
+        name="Pesquisar"
+        component={Pesquisar}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="search" color={color} size={size} />
           ),
           tabBarLabel: () => null,
         }}
