@@ -1,16 +1,22 @@
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
+import Slide from '../../components/Slide/index3';
+import FilterComponent from '../../components/Filtro';
 
 const SearchBar = () => {
   return (
-    <View style={styles.container}>
-      <Icon name="search" size={20} color="#8B0000" style={styles.icon} />
-      <TextInput
-        style={styles.input}
-        placeholder="Pesquisar..."
-        placeholderTextColor="#666666"
-      />
+    <View>
+      <View style={styles.container}>
+        <Icon name="search" size={20} color="#8B0000" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Pesquisar..."
+          placeholderTextColor="#666666"
+        />
+      </View>
+      <Slide /> 
+      <FilterComponent/>
     </View>
   );
 };

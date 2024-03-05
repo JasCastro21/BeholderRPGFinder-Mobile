@@ -38,6 +38,14 @@ export default function DrawerRoutes() {
                 drawerInactiveTintColor: 'gray', 
             }}
         >
+            <Drawer.Screen 
+                name='Home'  
+                component={TabRoutes} 
+                options={{
+                    drawerIcon: ({ color, size }) => <Feather name='home' color={color} size={size} />,
+                    drawerLabel: 'Início'
+                }}
+            />
 
             <Drawer.Screen 
                 name='Perfil'  
@@ -45,15 +53,6 @@ export default function DrawerRoutes() {
                 options={{
                     drawerIcon: ({ color, size }) => <Feather name='user' color={color} size={size} />,
                     drawerLabel: 'Meu Perfil',
-                }}
-            />
-            
-            <Drawer.Screen 
-                name='Home'  
-                component={TabRoutes} 
-                options={{
-                    drawerIcon: ({ color, size }) => <Feather name='home' color={color} size={size} />,
-                    drawerLabel: 'Início'
                 }}
             />
 
