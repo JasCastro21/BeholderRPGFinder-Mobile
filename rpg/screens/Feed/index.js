@@ -1,23 +1,32 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import Slide from '../../components/Slide/index';
-import Cards from '../../components/Cards/index';
+import { StyleSheet, View, Text } from 'react-native';
+import Tab from '../../components/Tab';
 
-export function Feed() {
+const Feed = () => {
   return (
     <View style={styles.container}>
-      <Slide />
-      <ScrollView>
-        <Cards />
-      </ScrollView>
+      <View style={styles.feedContent}>
+        <Text style={styles.text}>Conteúdo da Tela de Feed</Text>
+      </View>
+      <Tab />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  feedContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

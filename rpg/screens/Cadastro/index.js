@@ -3,22 +3,23 @@ import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, 
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Login = () => {
+const Cadastro = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [birthdate, setBirthdate] = useState('');
 
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');
   };
 
   const handleSignIn = () => {
-    navigation.navigate('Feed')
+    navigation.navigate('Login'); 
   };
 
   const handleSignUp = () => {
-    navigation.navigate('Cadastro')
-
+    navigation.navigate('Feed')
   };
 
   return (
@@ -28,6 +29,24 @@ const Login = () => {
         style={styles.backgroundImage}
       >
         <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Icon name="user" size={20} color="#8B0000" style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Nome de usuário"
+              autoCapitalize="none"
+              onChangeText={(text) => setUsername(text)}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Icon name="calendar" size={20} color="#8B0000" style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Data de Nascimento"
+              keyboardType="numeric"
+              onChangeText={(text) => setBirthdate(text)}
+            />
+          </View>
           <View style={styles.inputContainer}>
             <Icon name="envelope" size={20} color="#8B0000" style={styles.icon} />
             <TextInput
@@ -47,16 +66,13 @@ const Login = () => {
               onChangeText={(text) => setPassword(text)}
             />
           </View>
-          <TouchableOpacity style={styles.forgotPassword} onPress={handleForgotPassword}>
-            <Text style={styles.forgotPasswordText}>Esqueceu sua senha?</Text>
+          <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+            <Text style={styles.buttonText}>Inscreva-se</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-            <Text style={styles.buttonText}>Entrar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.signUp} onPress={handleSignUp}>
+          <TouchableOpacity style={styles.signUp} onPress={handleSignIn}>
             <Text>
-              <Text style={styles.simpleText}>Não está no Beholder?</Text> 
-              <Text style={styles.linkText}> Cadastre-se aqui!</Text>
+              <Text style={styles.simpleText}>Já possui uma conta?</Text> 
+              <Text style={styles.linkText}> Entre aqui!</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -65,7 +81,7 @@ const Login = () => {
   );
 };
 
-const styles = StyleSheet.create({  
+const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -135,4 +151,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Cadastro;

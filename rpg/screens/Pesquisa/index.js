@@ -1,23 +1,23 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import Tab from '../../components/Tab';
+import Tab from '../../components/Tab'; 
 
-const Perfil = () => {
+export default function Chat() {
   return (
     <View style={styles.container}>
-      <View style={styles.feedContent}>
-        <Text style={styles.text}>Conteúdo da Tela de Feed</Text>
+      <View style={styles.chatContent}>
+        <Text style={styles.text}>Pesquisaaaaa</Text>
       </View>
       <Tab />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  feedContent: {
+  chatContent: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -29,5 +29,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-export default Perfil;
