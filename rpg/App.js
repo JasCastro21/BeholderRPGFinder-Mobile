@@ -15,6 +15,7 @@ import Mesas from './screens/Mesas';
 import Jogadores from './screens/Jogadores';
 import Todos from './screens/Todos';
 import Mencoes from './screens/Mencoes';
+import Conversa from './screens/Conversa'
 
 const Stack = createStackNavigator();
 
@@ -48,11 +49,7 @@ export default function App() {
         <Stack.Screen name="Jogadores" component={Jogadores} options={{ headerShown: true }} />
         <Stack.Screen name="Todos" component={Todos} options={{ headerShown: true }} />
         <Stack.Screen name="Mencoes" component={Mencoes} options={{ headerShown: true }} />
-
-
-
-
-
+        <Stack.Screen name="Conversa" component={Conversa} options={{ headerShown: true }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

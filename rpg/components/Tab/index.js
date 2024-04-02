@@ -26,7 +26,7 @@ export default function Tab() {
       <TouchableOpacity style={styles.tabItem} onPress={() => navigateTo('Pesquisa')}>
         <Ionicons name="search-outline" size={28} color={getIconColor('Pesquisa')} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.tabItem} onPress={() => navigateTo('Chat')}>
+      <TouchableOpacity style={styles.tabItem} onPress={() => navigateTo('Conversa')}>
         <Ionicons name="chatbubble-outline" size={28} color={getIconColor('Chat')} />
       </TouchableOpacity>
     </View>
