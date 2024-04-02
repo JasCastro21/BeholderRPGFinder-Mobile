@@ -1,20 +1,19 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import Tab from '../../components/Tab'; 
 import NavBar from '../../components/NavBar'; 
+import Tab from '../../components/Tab'; 
 
-
-export default function Pesquisa() {
+const Seguindo = () => {
   const tabs = [
-    { key: 'pesquisa', text: 'Mesas', screen: 'Pesquisa' },
-    { key: 'jogadores', text: 'Jogadores', screen: 'Jogadores' },
+    { key: 'recomendados', text: 'Recomendados', screen: 'Feed' },
+    { key: 'seguindo', text: 'Seguindo', screen: 'Seguindo' },
   ];
 
   return (
     <View style={styles.container}>
-      <NavBar tabs={tabs} initialActiveTab='pesquisa'/>
+      <NavBar tabs={tabs} initialActiveTab='seguindo'/>
       <View style={styles.chatContent}>
-        <Text style={styles.text}>Pesquisaaaaa</Text>
+        <Text style={styles.text}>Seguindoooooooo</Text>
       </View>
       <Tab />
     </View>
@@ -37,3 +36,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+export default Seguindo;

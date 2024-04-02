@@ -4,7 +4,7 @@ import Tab from '../../components/Tab';
 import NavBar from '../../components/NavBar'; 
 
 
-export default function Pesquisa() {
+export default function Jogadores() {
   const tabs = [
     { key: 'pesquisa', text: 'Mesas', screen: 'Pesquisa' },
     { key: 'jogadores', text: 'Jogadores', screen: 'Jogadores' },
@@ -12,9 +12,9 @@ export default function Pesquisa() {
 
   return (
     <View style={styles.container}>
-      <NavBar tabs={tabs} initialActiveTab='pesquisa'/>
+      <NavBar tabs={tabs} initialActiveTab='jogadores'/>
       <View style={styles.chatContent}>
-        <Text style={styles.text}>Pesquisaaaaa</Text>
+        <Text style={styles.text}>Jogadoresssssssssssssssssss</Text>
       </View>
       <Tab />
     </View>

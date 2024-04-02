@@ -1,20 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Tab from '../../components/Tab'; 
-import NavBar from '../../components/NavBar'; 
 
-
-export default function Pesquisa() {
-  const tabs = [
-    { key: 'pesquisa', text: 'Mesas', screen: 'Pesquisa' },
-    { key: 'jogadores', text: 'Jogadores', screen: 'Jogadores' },
-  ];
-
+export default function Todos() {
   return (
     <View style={styles.container}>
-      <NavBar tabs={tabs} initialActiveTab='pesquisa'/>
       <View style={styles.chatContent}>
-        <Text style={styles.text}>Pesquisaaaaa</Text>
+        <Text style={styles.text}>Todooooooooooooosssssssssss</Text>
       </View>
       <Tab />
     </View>

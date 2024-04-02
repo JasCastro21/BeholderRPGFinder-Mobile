@@ -4,17 +4,17 @@ import Tab from '../../components/Tab';
 import NavBar from '../../components/NavBar'; 
 
 
-export default function Pesquisa() {
+export default function Mencoes() {
   const tabs = [
-    { key: 'pesquisa', text: 'Mesas', screen: 'Pesquisa' },
-    { key: 'jogadores', text: 'Jogadores', screen: 'Jogadores' },
+    { key: 'todos', text: 'Todos', screen: 'Notificacao' },
+    { key: 'mencoes', text: 'Menções', screen: 'Mencoes' },
   ];
 
   return (
     <View style={styles.container}>
-      <NavBar tabs={tabs} initialActiveTab='pesquisa'/>
+      <NavBar tabs={tabs} initialActiveTab='mencoes'/>
       <View style={styles.chatContent}>
-        <Text style={styles.text}>Pesquisaaaaa</Text>
+        <Text style={styles.text}>Mencoessssssssssssssss</Text>
       </View>
       <Tab />
     </View>

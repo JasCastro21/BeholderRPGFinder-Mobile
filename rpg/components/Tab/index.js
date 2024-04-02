@@ -1,40 +1,33 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons'; 
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Tab() {
   const navigation = useNavigation();
+  const route = useRoute();
 
-  const navigateToFeed = () => {
-    navigation.navigate('Feed');
+  const navigateTo = (screenName) => {
+    navigation.navigate(screenName);
   };
 
-  const navigateToNotificacao = () => {
-    navigation.navigate('Notificacao');
-  };
-
-  const navigateToChat = () => {
-    navigation.navigate('Chat');
-  };
-
-  const navigateToPesquisa = () => {
-    navigation.navigate('Pesquisa');
+  const getIconColor = (screenName) => {
+    return route.name === screenName ? 'white' : '#A9A9A9';
   };
 
   return (
     <View style={styles.tabBar}>
-      <TouchableOpacity style={styles.tabItem} onPress={navigateToFeed}>
-        <FontAwesome name="home" size={24} color="white" />
+      <TouchableOpacity style={styles.tabItem} onPress={() => navigateTo('Feed')}>
+        <Ionicons name="home-outline" size={28} color={getIconColor('Feed')} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.tabItem} onPress={navigateToNotificacao}>
-        <FontAwesome name="bell" size={24} color="white" />
+      <TouchableOpacity style={styles.tabItem} onPress={() => navigateTo('Notificacao')}>
+        <Ionicons name="notifications-outline" size={28} color={getIconColor('Notificacao')} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.tabItem} onPress={navigateToChat}>
-        <FontAwesome name="comments" size={24} color="white" />
+      <TouchableOpacity style={styles.tabItem} onPress={() => navigateTo('Pesquisa')}>
+        <Ionicons name="search-outline" size={28} color={getIconColor('Pesquisa')} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.tabItem} onPress={navigateToPesquisa}>
-        <FontAwesome name="search" size={24} color="white" />
+      <TouchableOpacity style={styles.tabItem} onPress={() => navigateTo('Chat')}>
+        <Ionicons name="chatbubble-outline" size={28} color={getIconColor('Chat')} />
       </TouchableOpacity>
     </View>
   );
