@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Image } from 'react-native';
 import Tab from '../../components/Tab';
 import Chu1 from '../../img/chu3.png';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function Chat() {
   const [messages, setMessages] = useState([
@@ -62,9 +63,10 @@ export default function Chat() {
           value={newMessageText}
           onChangeText={setNewMessageText}
           placeholder="Digite uma mensagem..."
+          placeholderTextColor="#666666"
         />
         <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-          <Text style={styles.sendButtonText}>Enviar</Text>
+          <Icon name="send" size={20} color="#fff" />
         </TouchableOpacity>
       </View>
       <Tab />
@@ -129,15 +131,15 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#f0f0f0',
     borderRadius: 20,
+    borderColor: '#8B0000',
+    borderWidth: 1.5, 
   },
   sendButton: {
     marginLeft: 8,
     paddingHorizontal: 20,
-    backgroundColor: '#007bff',
+    backgroundColor: '#8B0000',
     borderRadius: 20,
     justifyContent: 'center',
-  },
-  sendButtonText: {
-    color: '#fff',
+    alignItems: 'center',
   },
 });
