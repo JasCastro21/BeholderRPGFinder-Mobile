@@ -12,7 +12,7 @@ export default function Tab() {
   };
 
   const getIconColor = (screenName) => {
-    return route.name === screenName ? 'white' : '#A9A9A9';
+    return route.name === screenName ? 'white' : '#D9D9D9';
   };
 
   return (
