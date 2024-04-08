@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Button } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Modal, Button } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const FilterComponent = () => {
+const Filtro = ({ isJogadoresScreen }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('');
 
@@ -13,28 +13,36 @@ const FilterComponent = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.filterButton} onPress={() => onFilterPress('Tema 1')}>
-        <Text style={styles.filterText}>Tema 1</Text>
-        <FontAwesome5 name="angle-down" size={16} color="#7D7D7D" />
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.filterButton} onPress={() => onFilterPress('Tema 2')}>
-        <Text style={styles.filterText}>Tema 2</Text>
-        <FontAwesome5 name="angle-down" size={16} color="#7D7D7D" />
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.filterButton} onPress={() => onFilterPress('Horário')}>
-        <Text style={styles.filterText}>Horário</Text>
-        <FontAwesome5 name="angle-down" size={16} color="#7D7D7D" />
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.filterButton} onPress={() => onFilterPress('Valores')}>
-        <Text style={styles.filterText}>Valores</Text>
-        <FontAwesome5 name="angle-down" size={16} color="#7D7D7D" />
-      </TouchableOpacity>
+    <View style={[styles.container, isJogadoresScreen ? styles.jogadoresContainer : null]}>
+      {isJogadoresScreen ? (
+        <TouchableOpacity style={styles.filterButton} onPress={() => onFilterPress('Tema')}>
+          <Text style={styles.filterText}>Tema</Text>
+          <FontAwesome5 name="angle-down" size={16} color="#7D7D7D" />
+        </TouchableOpacity>
+      ) : (
+        <>
+          <TouchableOpacity style={styles.filterButton} onPress={() => onFilterPress('Tema 1')}>
+            <Text style={styles.filterText}>Tema 1</Text>
+            <FontAwesome5 name="angle-down" size={16} color="#7D7D7D" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.filterButton} onPress={() => onFilterPress('Tema 2')}>
+            <Text style={styles.filterText}>Tema 2</Text>
+            <FontAwesome5 name="angle-down" size={16} color="#7D7D7D" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.filterButton} onPress={() => onFilterPress('Horário')}>
+            <Text style={styles.filterText}>Horário</Text>
+            <FontAwesome5 name="angle-down" size={16} color="#7D7D7D" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.filterButton} onPress={() => onFilterPress('Valores')}>
+            <Text style={styles.filterText}>Valores</Text>
+            <FontAwesome5 name="angle-down" size={16} color="#7D7D7D" />
+          </TouchableOpacity>
+        </>
+      )}
 
-      {/* Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -60,6 +68,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     padding: 10,
     backgroundColor: '#f5f5f5',
+  },
+  jogadoresContainer: {
+    justifyContent: 'flex-start', 
   },
   filterButton: {
     flexDirection: 'row',
@@ -110,4 +121,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FilterComponent;
+export default Filtro;

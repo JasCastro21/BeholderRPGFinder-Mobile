@@ -2,14 +2,16 @@ import React from 'react';
 import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
-const SearchBar = ({ searchQuery, setSearchQuery, onSearchPress }) => {
+const SearchBar = ({ searchQuery, setSearchQuery, onSearchPress, tipoTela }) => {
+  let placeholderText = tipoTela === 'jogadores' ? 'Pesquisar jogadores' : 'Pesquisar mesas';
+
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
         value={searchQuery}
         onChangeText={setSearchQuery}
-        placeholder="Nome da mesa"
+        placeholder={placeholderText}
         placeholderTextColor="#7D7D7D"
         selectionColor="#8B0000" 
       />

@@ -1,13 +1,14 @@
-// Pesquisa.js
 import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Tab from '../../components/Tab'; 
 import NavBar from '../../components/NavBar'; 
 import SearchBar from '../../components/SearchBar'; 
 import Filtro from '../../components/Filtro';
+import CardM from '../../components/CardM';
 
 export default function Pesquisa() {
   const [searchQuery, setSearchQuery] = useState('');
+
   const tabs = [
     { key: 'pesquisa', text: 'Mesas', screen: 'Pesquisa' },
     { key: 'jogadores', text: 'Jogadores', screen: 'Jogadores' },
@@ -24,12 +25,15 @@ export default function Pesquisa() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         onSearchPress={handleSearchPress}
+        tipoTela="pesquisa"
       />
 
       <Filtro/>
 
       <View style={styles.chatContent}>
-        <Text style={styles.text}>Pesquisaaaaa</Text>
+
+      <CardM/>
+      
       </View>
       <Tab />
     </View>
@@ -43,8 +47,6 @@ const styles = StyleSheet.create({
   },
   chatContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   text: {
     fontSize: 20,
