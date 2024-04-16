@@ -4,6 +4,7 @@ import Tab from '../../components/Tab';
 import NavBar from '../../components/NavBar'; 
 import SearchBar from '../../components/SearchBar'; 
 import Filtro from '../../components/Filtro';
+import CardJogador from '../../components/CardJogador';
 
 export default function Jogadores() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,7 +32,7 @@ export default function Jogadores() {
       <Filtro isJogadoresScreen={true} />
 
       <View style={styles.chatContent}>
-        <Text style={styles.text}>Jogadoresssssssssssssssssss</Text>
+        <CardJogador/>
       </View>
       <Tab />
     </View>
@@ -41,12 +42,10 @@ export default function Jogadores() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5', 
   },
   chatContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
   },
   text: {
     fontSize: 20,

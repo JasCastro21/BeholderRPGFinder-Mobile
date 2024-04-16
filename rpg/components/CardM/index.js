@@ -1,42 +1,39 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Certifique-se de instalar essa biblioteca
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const CardM = ({ mestre, horario, preco, descricao, onPress, avaliacao }) => {
-  // Função para renderizar as estrelas de avaliação
-  const renderStars = () => {
-    let stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <Icon
-          key={i}
-          name={i <= avaliacao ? 'star' : 'star-o'}
-          size={16}
-          color={i <= avaliacao ? "#FFD700" : "#e4e5e9"}
-          style={styles.star}
-        />
-      );
-    }
-    return stars;
-  };
-
+const CardM = ({ onPress }) => {
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
-        {/* Imagem circular com borda vermelha */}
-        <Image source={require('../../img/chuu2.jpg')} style={styles.image} />
-        <View style={styles.starsContainer}>{renderStars()}</View>
+        <Image source={require('../../img/08.jpg')} style={styles.image} />
       </View>
-      <View style={styles.detailsContainer}>
-        <View style={styles.tagContainer}>
-          <Text style={styles.tagText}>Medieval</Text>
+      <View style={styles.rightContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>A Maldição de Strahd</Text>
+          <View style={styles.tagContainer}>
+            <Text style={styles.tagText}>Medieval</Text>
+          </View>
         </View>
-        <Text style={styles.title}>A Maldição de Strahd</Text>
-        <Text style={styles.info}>Mestre: {mestre}</Text>
-        <Text style={styles.info}>Vagas: 1/3</Text>
-        <Text style={styles.info}>Domingo | {horario}</Text>
-        <Text style={styles.info}>{preco}/Sessão</Text>
-        <Text style={styles.description}>{descricao}</Text>
+        <View style={styles.infoContainer}>
+          <Icon name="user" size={16} color="#900" />
+          <Text style={styles.info}>Mestre: Gisele Costa</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Icon name="users" size={16} color="#900" />
+          <Text style={styles.info}>Vagas: 1/3</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Icon name="calendar" size={16} color="#900" />
+          <Text style={styles.info}>Domingo | 20:00 - 22:30</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Icon name="money" size={16} color="#900" />
+          <Text style={styles.info}>30R$/Sessão</Text>
+        </View>
+        <Text style={styles.description}>
+          Sob furiosas nuvens tempestuosas, o vampiro Conde Strahd von Zaro...
+        </Text>
         <TouchableOpacity onPress={onPress} style={styles.button}>
           <Text style={styles.buttonText}>Enviar Pedido</Text>
         </TouchableOpacity>
@@ -48,72 +45,69 @@ const CardM = ({ mestre, horario, preco, descricao, onPress, avaliacao }) => {
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 10,
-    overflow: 'hidden',
-    shadowColor: 'rgba(0,0,0,0.2)',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
     margin: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
   },
   imageContainer: {
-    padding: 10,
-    alignItems: 'center',
     justifyContent: 'center',
+    margin: 10,
   },
   image: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    borderWidth: 2,
-    borderColor: '#8B0000',
   },
-  starsContainer: {
-    flexDirection: 'row',
-    marginTop: 4,
-  },
-  detailsContainer: {
+  rightContainer: {
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
+    padding: 10,
   },
-  tagContainer: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: '#8B0000',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
-  },
-  tagText: {
-    color: 'white',
-    fontWeight: 'bold',
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'black',
-    marginBottom: 4,
+    color: 'Black',
+  },
+  tagContainer: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#900',
+    borderRadius: 10,
+    padding: 5,
+  },
+  tagText: {
+    color: '#900',
+    fontWeight: 'bold',
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
   },
   info: {
+    marginLeft: 10,
     fontSize: 14,
     color: 'black',
-    marginBottom: 2,
   },
   description: {
     fontSize: 12,
     color: 'grey',
-    marginBottom: 8,
+    marginTop: 10,
   },
   button: {
     backgroundColor: '#8B0000',
-    borderRadius: 20,
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
@@ -121,9 +115,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
-  },
-  star: {
-    marginRight: 3,
+    fontSize: 16,
   },
 });
 

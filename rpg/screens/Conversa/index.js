@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Tab from '../../components/Tab'; 
+import CardConversa from '../../components/CardConversa';
 
 export default function Conversa() {
   return (
     <View style={styles.container}>
       <View style={styles.chatContent}>
-        <Text style={styles.text}>Conversaaaaaaaaaaaaaaa</Text>
+        <CardConversa/>
       </View>
       <Tab />
     </View>
@@ -19,13 +20,8 @@ const styles = StyleSheet.create({
   },
   chatContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    justifyContent: 'flex-start', 
+    paddingHorizontal: 10,
   },
 });
