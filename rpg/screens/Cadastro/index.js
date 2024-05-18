@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { criarNovoUsuario } from '../../services/api/usuario';
 
 const Cadastro = () => {
   const navigation = useNavigation();
@@ -10,16 +11,38 @@ const Cadastro = () => {
   const [username, setUsername] = useState('');
   const [birthdate, setBirthdate] = useState('');
 
-  const handleForgotPassword = () => {
-    navigation.navigate('ForgotPassword');
-  };
-
   const handleSignIn = () => {
     navigation.navigate('Login');
   };
 
-  const handleSignUp = () => {
-    navigation.navigate('Feed');
+  const handleSignUp = async () => {
+    try {
+      const data = {
+        nome: username,
+        email: email,
+        senha: password,
+        datanascimento: birthdate
+      };
+      await criarNovoUsuario(data);
+      Alert.alert(
+        "Sucesso!",
+        "Usuário cadastrado com sucesso.",
+        [
+          { text: "OK", onPress: () => navigation.navigate('Login') }
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      console.error("Erro ao cadastrar o usuário:", error);
+      Alert.alert(
+        "Erro ao cadastrar",
+        "Ocorreu um erro ao cadastrar o usuário. Por favor, tente novamente mais tarde.",
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
+    }
   };
 
   return (

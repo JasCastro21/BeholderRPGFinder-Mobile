@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { autenticar } from '../../services/api/usuario';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -12,8 +14,22 @@ const Login = () => {
     navigation.navigate('ForgotPassword');
   };
 
-  const handleSignIn = () => {
-    navigation.navigate('Feed');
+  const handleSignIn = async () => {
+    try {
+      const token = await autenticar({ email, senha: password });
+      await AsyncStorage.setItem("BeholderToken", token);
+      navigation.navigate('Feed');
+    } catch (error) {
+      console.log(error)
+      Alert.alert(
+        "Erro de autenticação",
+        "Credenciais inválidas. Por favor, verifique seu email e senha e tente novamente.",
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
+    }
   };
 
   const handleSignUp = () => {
