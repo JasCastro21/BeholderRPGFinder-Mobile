@@ -45,7 +45,7 @@ const CardM = ({ onPress }) => {
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     backgroundColor: 'white',
     borderRadius: 10,
     margin: 10,
@@ -54,19 +54,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
+    padding: 10,
   },
   imageContainer: {
     justifyContent: 'center',
-    margin: 10,
+    alignItems: 'center',
+    marginRight: 10,
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   rightContainer: {
     flex: 1,
-    padding: 10,
   },
   header: {
     flexDirection: 'row',
@@ -74,20 +75,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'black',
   },
   tagContainer: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#900',
-    borderRadius: 10,
-    padding: 5,
+    backgroundColor: '#900',
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
   tagText: {
-    color: '#900',
+    color: 'white',
     fontWeight: 'bold',
+    fontSize: 12,
   },
   infoContainer: {
     flexDirection: 'row',
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   info: {
-    marginLeft: 10,
+    marginLeft: 6,
     fontSize: 14,
     color: 'black',
   },
