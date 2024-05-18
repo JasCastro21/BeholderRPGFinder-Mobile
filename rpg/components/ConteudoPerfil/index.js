@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchUserData } from '../../services/utils/auth';
 import chu1 from '../../img/7.png';
 import fundo1 from '../../img/chu3.png';
 
@@ -15,6 +17,20 @@ const posts = [
 ];
 
 const ConteudoPerfil = () => {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const userData = await fetchUserData();
+        setUserData(userData);
+      } catch (error) {
+        console.error("Erro ao carregar os dados do usuário:", error);
+      }
+    };
+    loadUserData();
+  }, []);
+
   const renderPost = ({ item }) => (
     <View style={styles.postContainer}>
       <Text style={styles.postText}>{item.text}</Text>
@@ -32,28 +48,13 @@ const ConteudoPerfil = () => {
       <View style={styles.header}>
         <Image source={fundo1} style={styles.profileImage} />
         <View style={styles.headerText}>
-          <Text style={styles.name}>Chuu do Critei | 🇺🇦</Text>
-          <Text style={styles.handle}>@chuull02</Text>
-          <Text style={styles.bio}>
-            Sou mestra e jogadora de RPG, atualmente, mestro uma campanha de D&D chamada "Stellarium", mais informações no link fixado!
-          </Text>
-          <Text style={styles.location}>🇧🇷 Brasil</Text>
-          <Text style={styles.link}>stellariumrpg.com</Text>
+          <Text style={styles.name}>{userData ? userData.nome : "Carregando..."}</Text>
+          <Text style={styles.email}>{userData ? userData.email : ""}</Text>
+          <Text style={styles.xp}>XP: {userData ? userData.xp : 0}</Text>
         </View>
         <TouchableOpacity style={styles.editButton}>
           <Text style={styles.editButtonText}>Editar Perfil</Text>
         </TouchableOpacity>
-      </View>
-      <View style={styles.stats}>
-        <Text style={styles.statItem}>23 Seguindo</Text>
-        <Text style={styles.statItem}>56 Seguidores</Text>
-      </View>
-      <View style={styles.rating}>
-        <Text style={styles.ratingText}>Avaliação: ★★★★☆</Text>
-      </View>
-      <View style={styles.tags}>
-        <Text style={styles.tag}>Medieval</Text>
-        <Text style={styles.tag}>Suspense</Text>
       </View>
       <FlatList
         data={posts}
@@ -88,18 +89,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  handle: {
+  email: {
+    fontSize: 16,
     color: 'gray',
   },
-  bio: {
+  xp: {
     marginTop: 8,
-  },
-  location: {
-    marginTop: 8,
-  },
-  link: {
-    marginTop: 8,
-    color: 'blue',
+    fontSize: 16,
   },
   editButton: {
     backgroundColor: '#d32f2f',
@@ -108,32 +104,6 @@ const styles = StyleSheet.create({
   },
   editButtonText: {
     color: '#fff',
-  },
-  stats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 16,
-  },
-  statItem: {
-    fontSize: 16,
-  },
-  rating: {
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  ratingText: {
-    fontSize: 16,
-  },
-  tags: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingVertical: 8,
-  },
-  tag: {
-    backgroundColor: '#f0f0f0',
-    padding: 8,
-    marginHorizontal: 4,
-    borderRadius: 4,
   },
   postsList: {
     padding: 16,
