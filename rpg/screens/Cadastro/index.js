@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -15,69 +15,76 @@ const Cadastro = () => {
   };
 
   const handleSignIn = () => {
-    navigation.navigate('Login'); 
+    navigation.navigate('Login');
   };
 
   const handleSignUp = () => {
-    navigation.navigate('Feed')
+    navigation.navigate('Feed');
   };
 
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require('../../img/Fundo2.png')}
-        style={styles.backgroundImage}
-      >
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <Icon name="user" size={20} color="#8B0000" style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Nome de usuário"
-              autoCapitalize="none"
-              onChangeText={(text) => setUsername(text)}
-            />
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <ImageBackground
+          source={require('../../img/Fundo2.png')}
+          style={styles.backgroundImage}
+        >
+          <View style={styles.overlay}>
+            <View style={styles.formContainer}>
+              <View style={styles.inputContainer}>
+                <Icon name="user" size={20} color="#8B0000" style={styles.icon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Nome de usuário"
+                  autoCapitalize="none"
+                  onChangeText={(text) => setUsername(text)}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Icon name="calendar" size={20} color="#8B0000" style={styles.icon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Data de Nascimento"
+                  keyboardType="numeric"
+                  onChangeText={(text) => setBirthdate(text)}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Icon name="envelope" size={20} color="#8B0000" style={styles.icon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  onChangeText={(text) => setEmail(text)}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Icon name="lock" size={20} color="#8B0000" style={styles.icon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Senha"
+                  secureTextEntry={true}
+                  onChangeText={(text) => setPassword(text)}
+                />
+              </View>
+              <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+                <Text style={styles.buttonText}>Inscreva-se</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.signUp} onPress={handleSignIn}>
+                <Text>
+                  <Text style={styles.simpleText}>Já possui uma conta?</Text> 
+                  <Text style={styles.linkText}> Entre aqui!</Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.inputContainer}>
-            <Icon name="calendar" size={20} color="#8B0000" style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Data de Nascimento"
-              keyboardType="numeric"
-              onChangeText={(text) => setBirthdate(text)}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Icon name="envelope" size={20} color="#8B0000" style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              onChangeText={(text) => setEmail(text)}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Icon name="lock" size={20} color="#8B0000" style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Senha"
-              secureTextEntry={true}
-              onChangeText={(text) => setPassword(text)}
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-            <Text style={styles.buttonText}>Inscreva-se</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.signUp} onPress={handleSignIn}>
-            <Text>
-              <Text style={styles.simpleText}>Já possui uma conta?</Text> 
-              <Text style={styles.linkText}> Entre aqui!</Text>
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
-    </View>
+        </ImageBackground>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -85,16 +92,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  scrollContainer: {
+    flexGrow: 1,
+  },
   backgroundImage: {
     flex: 1,
     resizeMode: 'cover',
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
-  formContainer: {
+  overlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  formContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 20,
+    alignItems: 'center',
+    width: '80%',
+    maxWidth: 400,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -108,13 +127,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 2,
     borderColor: '#8B0000',
-    width: 350,
+    width: '100%',
   },
   icon: {
     position: 'absolute',
     top: 12,
     left: 10,
-    zIndex: 1,
   },
   button: {
     backgroundColor: '#8B0000',
@@ -122,7 +140,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginVertical: 5,
     borderRadius: 20,
-    width: 350,
+    width: '100%',
   },
   buttonText: {
     color: 'white',
