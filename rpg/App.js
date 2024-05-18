@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Inicial from './screens/Inicial';
@@ -7,35 +7,47 @@ import Login from './screens/Login';
 import Cadastro from './screens/Cadastro';
 import Notificacao from './screens/Notificacao';
 import Chat from './screens/Chat';
-import Feed from './screens/Feed'; 
+import Feed from './screens/Feed';
 import Pesquisa from './screens/Pesquisa';
 import Perfil from './screens/Perfil';
-import Seguindo from './screens/Seguindo'
+import Seguindo from './screens/Seguindo';
 import Mesas from './screens/Mesas';
 import Jogadores from './screens/Jogadores';
 import Todos from './screens/Todos';
 import Mencoes from './screens/Mencoes';
-import Conversa from './screens/Conversa'
+import Conversa from './screens/Conversa';
 
 const Stack = createStackNavigator();
+
+const HeaderTitleWithProfile = ({ navigation }) => (
+  <View style={styles.headerContainer}>
+    <View style={styles.logoContainer}>
+      <Image
+        style={styles.logo}
+        source={require('./img/Logo.png')}
+      />
+    </View>
+    <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
+      <Image
+        style={styles.profileIcon}
+        source={require('./img/chuu2.jpg')}
+      />
+    </TouchableOpacity>
+  </View>
+);
 
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Inicial"
-        screenOptions={{
+        screenOptions={({ navigation }) => ({
           headerStyle: styles.header,
-          headerTintColor: '#fff', 
-          headerTitleAlign: 'center', 
-          animationEnabled: false, 
-          headerTitle: () => (
-            <Image
-              style={{ width: 50, height: 50 }} 
-              source={require('./img/Logo.png')}
-            />
-          ),
-        }}>
+          headerTintColor: '#fff',
+          headerTitleAlign: 'center',
+          animationEnabled: false,
+          headerTitle: () => <HeaderTitleWithProfile navigation={navigation} />,
+        })}>
         <Stack.Screen name="Inicial" component={Inicial} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Cadastro" component={Cadastro} options={{ headerShown: false }} />
@@ -57,7 +69,26 @@ export default function App() {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#8B0000', 
-    minHeight: 40, 
+    backgroundColor: '#8B0000',
+    minHeight: 40,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  logoContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  logo: {
+    width: 50,
+    height: 50,
+  },
+  profileIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginLeft: 50, // Alterado para mover a foto de perfil para a direita
   },
 });
