@@ -13,7 +13,7 @@ const CriarMesa = () => {
   const [cost, setCost] = useState('');
 
   const handlePostar = () => {
-    // Lógica para postar
+
   };
 
   return (

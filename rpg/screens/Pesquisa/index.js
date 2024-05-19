@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, Text } from 'react-native';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { getMesas } from '../../services/api/mesa';
 import { getUsuarioPorId } from '../../services/api/usuario';
 import { entrarNaMesa } from '../../services/api/usuario';
-
+import { useNavigation } from '@react-navigation/native';
 import CardM from '../../components/CardM'; 
 
 import { listarUsuariosDaMesa } from '../../services/api/usuariomesa';
 import { fetchUserData } from '../../services/utils/auth';
 
 const Pesquisa = () => {
+  const navigation = useNavigation();
+
   const [mesas, setMesas] = useState([]);
   const [userId, setUserId] = useState(null);
 
@@ -27,7 +29,6 @@ const Pesquisa = () => {
           const mestreResponse = await getUsuarioPorId(mesa.mestre); 
           const usuariosDaMesaResponse = await listarUsuariosDaMesa(mesa.id);
   
-
           const [mestreResponseData, usuariosDaMesaResponseData] = await Promise.all([mestreResponse, usuariosDaMesaResponse]);
   
           const usuariosNaMesa = usuariosDaMesaResponseData.data.map(usuario => usuario.usuario.id);
@@ -62,7 +63,6 @@ const Pesquisa = () => {
   
   }, []); // Certifique-se de passar um array vazio como segundo argumento do useEffect
   
-
   const handleEntrarPress = async (mesaId) => {
     try {
       const mesa = mesas.find(m => m.id === mesaId);
@@ -77,7 +77,7 @@ const Pesquisa = () => {
         // Se o usuário já estiver na mesa, podemos implementar a lógica para sair da mesa aqui
         alert('Você está retornando à mesa!');
         // Implemente a lógica para sair da mesa aqui
-      }else if (vagasDisponiveis <= 0) {
+      } else if (mesa.vagasDisponiveis <= 0) {
         // Se não houver vagas disponíveis, exiba uma mensagem de erro
         alert('Desculpe, esta mesa está cheia. Tente outra!');
       } else {
@@ -88,6 +88,10 @@ const Pesquisa = () => {
     } catch (error) {
       alert('Erro ao entrar na mesa. Tente novamente.');
     }
+  };
+
+  const handleAdicionarMesaPress = () => {
+    navigation.navigate('CriarMesa');
   };
 
   return (
@@ -112,6 +116,9 @@ const Pesquisa = () => {
         )}
         ListEmptyComponent={<Text style={styles.emptyMessage}>Nenhuma mesa encontrada.</Text>}
       />
+      <TouchableOpacity style={styles.addButton} onPress={handleAdicionarMesaPress}>
+        <Text style={styles.addButtonText}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -127,6 +134,22 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     color: '#666',
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 50,
+    height: 50,
+    backgroundColor: '#8b0000',
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+  },
+  addButtonText: {
+    fontSize: 30,
+    color: 'white',
   },
 });
 
