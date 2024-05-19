@@ -2,7 +2,19 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
-const CardM = ({ title, subtitle, descricao, mestre, vagas, dia, horario, preco, onPress, onEntrarPress }) => {
+const CardM = ({ 
+  title, 
+  subtitle, 
+  descricao, 
+  mestre, 
+  vagas, 
+  dia, 
+  horario, 
+  preco, 
+  onPress, 
+  buttonText, 
+  onButtonPress 
+}) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.header}>
@@ -30,8 +42,8 @@ const CardM = ({ title, subtitle, descricao, mestre, vagas, dia, horario, preco,
         <Text style={styles.label}>Preço:</Text>
         <Text style={styles.value}>R${preco}</Text>
       </View>
-      <TouchableOpacity style={styles.entrarButton} onPress={onEntrarPress}>
-        <Text style={styles.entrarButtonText}>Entrar</Text>
+      <TouchableOpacity style={styles.entrarButton} onPress={onButtonPress}>
+        <Text style={styles.entrarButtonText}>{buttonText}</Text>
       </TouchableOpacity>
     </TouchableOpacity>
   );

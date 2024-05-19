@@ -6,38 +6,85 @@ import { entrarNaMesa } from '../../services/api/usuario';
 
 import CardM from '../../components/CardM'; 
 
+import { listarUsuariosDaMesa } from '../../services/api/usuariomesa';
+import { fetchUserData } from '../../services/utils/auth';
+
 const Pesquisa = () => {
   const [mesas, setMesas] = useState([]);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const fetchMesas = async () => {
+    const fetchUserDataAndMesas = async () => {
       try {
+        const userData = await fetchUserData();
+        const userId = userData.id; // Defina userId dentro da função fetchUserDataAndMesas
+  
         const response = await getMesas();
         const mesasData = response.data;
+  
+        const mesasComMestre = [];
+        for (const mesa of mesasData) {
+          const mestreResponse = await getUsuarioPorId(mesa.mestre); 
+          const usuariosDaMesaResponse = await listarUsuariosDaMesa(mesa.id);
+  
 
-        // Itera sobre cada mesa para buscar o nome do mestre
-        const mesasComMestre = await Promise.all(mesasData.map(async (mesa) => {
-          const mestreResponse = await getUsuarioPorId(mesa.mestre);
-          return {
+          const [mestreResponseData, usuariosDaMesaResponseData] = await Promise.all([mestreResponse, usuariosDaMesaResponse]);
+  
+          const usuariosNaMesa = usuariosDaMesaResponseData.data.map(usuario => usuario.usuario.id);
+          const usuarioJaNaMesa = usuariosNaMesa.includes(userId);
+  
+          mesasComMestre.push({
             ...mesa,
-            mestreNome: mestreResponse.data.nome,
-          };
-        }));
-
+            mestreNome: mestreResponseData.data.nome,
+            usuarioJaNaMesa,
+            vagasDisponiveis: mesa.vagas
+          });
+        }
+  
         setMesas(mesasComMestre);
       } catch (error) {
-        console.error('Erro ao buscar mesas:', error);
+        console.error('Erro ao buscar dados do usuário e mesas:', error);
       }
     };
-
-    fetchMesas();
-  }, []);
+  
+    const fetchData = async () => {
+      try {
+        const userData = await fetchUserData();
+        console.log('ID do usuário fetchado pesquisa:', userData.id);
+        setUserId(userData.id);
+      } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error);
+      }
+    };
+  
+    fetchData();
+    fetchUserDataAndMesas(); // Chame fetchUserDataAndMesas após setUserId
+  
+  }, []); // Certifique-se de passar um array vazio como segundo argumento do useEffect
+  
 
   const handleEntrarPress = async (mesaId) => {
     try {
-      await entrarNaMesa(mesaId);
-      alert('Você entrou na mesa com sucesso!');
-      // Aqui você pode adicionar lógica adicional, como redirecionar o usuário para a página da mesa
+      const mesa = mesas.find(m => m.id === mesaId);
+      if (!mesa) {
+        console.error("Mesa não encontrada.");
+        return;
+      }
+  
+      const usuarioJaNaMesa = mesa.usuarioJaNaMesa;
+  
+      if (usuarioJaNaMesa) {
+        // Se o usuário já estiver na mesa, podemos implementar a lógica para sair da mesa aqui
+        alert('Você está retornando à mesa!');
+        // Implemente a lógica para sair da mesa aqui
+      }else if (vagasDisponiveis <= 0) {
+        // Se não houver vagas disponíveis, exiba uma mensagem de erro
+        alert('Desculpe, esta mesa está cheia. Tente outra!');
+      } else {
+        await entrarNaMesa(mesaId);
+        alert('Você entrou na mesa com sucesso!');
+        // Aqui você pode adicionar lógica adicional, como redirecionar o usuário para a página da mesa
+      }
     } catch (error) {
       alert('Erro ao entrar na mesa. Tente novamente.');
     }
@@ -59,7 +106,8 @@ const Pesquisa = () => {
             horario={item.horario}
             preco={item.preco}
             onPress={() => { /* ação quando clicar no card */ }}
-            onEntrarPress={() => handleEntrarPress(item.id)}
+            buttonText={item.usuarioJaNaMesa ? 'Retornar' : 'Entrar'}
+            onButtonPress={() => handleEntrarPress(item.id)}
           />
         )}
         ListEmptyComponent={<Text style={styles.emptyMessage}>Nenhuma mesa encontrada.</Text>}
