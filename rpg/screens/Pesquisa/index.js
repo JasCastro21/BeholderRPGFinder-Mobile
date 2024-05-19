@@ -1,71 +1,85 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Importe o hook useNavigation
-import Tab from '../../components/Tab'; 
-import NavBar from '../../components/NavBar'; 
-import SearchBar from '../../components/SearchBar'; 
-import Filtro from '../../components/Filtro';
-import CardM from '../../components/CardM';
-import { FontAwesome } from '@expo/vector-icons'; // Importe o ícone desejado
+import React, { useEffect, useState } from 'react';
+import { View, FlatList, StyleSheet, Text } from 'react-native';
+import { getMesas } from '../../services/api/mesa';
+import { getUsuarioPorId } from '../../services/api/usuario';
+import { entrarNaMesa } from '../../services/api/usuario';
 
-export default function Pesquisa() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const navigation = useNavigation(); // Obtenha a função de navegação
+import CardM from '../../components/CardM'; 
 
-  const tabs = [
-    { key: 'pesquisa', text: 'Mesas', screen: 'Pesquisa' },
-    { key: 'jogadores', text: 'Jogadores', screen: 'Jogadores' },
-  ];
+const Pesquisa = () => {
+  const [mesas, setMesas] = useState([]);
 
-  const handleSearchPress = () => {
-    console.log(searchQuery);
-  };
+  useEffect(() => {
+    const fetchMesas = async () => {
+      try {
+        const response = await getMesas();
+        const mesasData = response.data;
 
-  const handleCreateTablePress = () => {
-    navigation.navigate('CriarMesa'); // Navegue para a tela 'CriarMesa'
+        // Itera sobre cada mesa para buscar o nome do mestre
+        const mesasComMestre = await Promise.all(mesasData.map(async (mesa) => {
+          const mestreResponse = await getUsuarioPorId(mesa.mestre);
+          return {
+            ...mesa,
+            mestreNome: mestreResponse.data.nome,
+          };
+        }));
+
+        setMesas(mesasComMestre);
+      } catch (error) {
+        console.error('Erro ao buscar mesas:', error);
+      }
+    };
+
+    fetchMesas();
+  }, []);
+
+  const handleEntrarPress = async (mesaId) => {
+    try {
+      await entrarNaMesa(mesaId);
+      alert('Você entrou na mesa com sucesso!');
+      // Aqui você pode adicionar lógica adicional, como redirecionar o usuário para a página da mesa
+    } catch (error) {
+      alert('Erro ao entrar na mesa. Tente novamente.');
+    }
   };
 
   return (
     <View style={styles.container}>
-      <NavBar tabs={tabs} initialActiveTab='pesquisa'/>
-      <SearchBar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        onSearchPress={handleSearchPress}
-        tipoTela="pesquisa"
+      <FlatList
+        data={mesas}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <CardM
+            title={item.titulo}
+            subtitle={item.subtitulo}
+            descricao={item.descricao}
+            mestre={item.mestreNome}
+            vagas={item.vagas}
+            dia={item.dia}
+            horario={item.horario}
+            preco={item.preco}
+            onPress={() => { /* ação quando clicar no card */ }}
+            onEntrarPress={() => handleEntrarPress(item.id)}
+          />
+        )}
+        ListEmptyComponent={<Text style={styles.emptyMessage}>Nenhuma mesa encontrada.</Text>}
       />
-
-      <Filtro/>
-
-      <View style={styles.chatContent}>
-        <CardM/>
-        {/* Botão redondo com ícone "+" */}
-        <TouchableOpacity style={styles.addButton} onPress={handleCreateTablePress}>
-          <FontAwesome name="plus" size={30} color="white" style={{ fontWeight: '100' }} />
-        </TouchableOpacity>
-      </View>
-      <Tab />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5', 
+    backgroundColor: '#f4f4f4',
+    padding: 10,
   },
-  chatContent: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#8B0000',
-    alignItems: 'center',
-    justifyContent: 'center',
+  emptyMessage: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#666',
   },
 });
 
+export default Pesquisa;

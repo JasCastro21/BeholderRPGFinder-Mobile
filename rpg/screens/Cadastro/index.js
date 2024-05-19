@@ -23,6 +23,7 @@ const Cadastro = () => {
         senha: password,
         datanascimento: birthdate
       };
+      console.log(data)
       await criarNovoUsuario(data);
       Alert.alert(
         "Sucesso!",

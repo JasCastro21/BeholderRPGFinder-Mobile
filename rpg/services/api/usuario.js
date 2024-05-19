@@ -1,6 +1,6 @@
 import { api } from ".";
 import { buscarTema } from "../api/tema";
-import { getCookieValue } from "../utils/auth";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const criarNovoUsuario = async (data) => {
   if (data.datanascimento) {
@@ -64,12 +64,12 @@ export const getUsuarioPorId = async (id) => {
 
 export const entrarNaMesa = async (mesaId) => {
   try {
-    // Obtenha o token do cookie
-    const token = getCookieValue("BeholderToken");
+    // Obtenha o token do AsyncStorage
+    const token = await AsyncStorage.getItem('BeholderToken');
 
     // Verifique se há um token antes de fazer a solicitação
     if (!token) {
-      alert("É necessário estar logado para entrar em uma mesa");
+      alert('É necessário estar logado para entrar em uma mesa');
       return;
     }
 
@@ -89,7 +89,7 @@ export const entrarNaMesa = async (mesaId) => {
 
     return response;
   } catch (error) {
-    console.error("Erro ao entrar na mesa:", error);
+    console.error('Erro ao entrar na mesa:', error);
     throw error;
   }
 };

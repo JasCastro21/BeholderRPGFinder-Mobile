@@ -1,122 +1,95 @@
+// CardM.js
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
-const CardM = ({ onPress }) => {
+const CardM = ({ title, subtitle, descricao, mestre, vagas, dia, horario, preco, onPress, onEntrarPress }) => {
   return (
-    <View style={styles.card}>
-      <View style={styles.imageContainer}>
-        <Image source={require('../../img/08.jpg')} style={styles.image} />
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.subtitle}>{subtitle}</Text>
       </View>
-      <View style={styles.rightContainer}>
-        <View style={styles.header}>
-          <Text style={styles.title}>A Maldição de Strahd</Text>
-          <View style={styles.tagContainer}>
-            <Text style={styles.tagText}>Medieval</Text>
-          </View>
-        </View>
-        <View style={styles.infoContainer}>
-          <Icon name="user" size={16} color="#900" />
-          <Text style={styles.info}>Mestre: Gisele Costa</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <Icon name="users" size={16} color="#900" />
-          <Text style={styles.info}>Vagas: 1/3</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <Icon name="calendar" size={16} color="#900" />
-          <Text style={styles.info}>Domingo | 20:00 - 22:30</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <Icon name="money" size={16} color="#900" />
-          <Text style={styles.info}>30R$/Sessão</Text>
-        </View>
-        <Text style={styles.description}>
-          Sob furiosas nuvens tempestuosas, o vampiro Conde Strahd von Zaro...
-        </Text>
-        <TouchableOpacity onPress={onPress} style={styles.button}>
-          <Text style={styles.buttonText}>Enviar Pedido</Text>
-        </TouchableOpacity>
+      <Text style={styles.descricao}>{descricao}</Text>
+      <View style={styles.row}>
+        <Text style={styles.label}>Mestre:</Text>
+        <Text style={styles.value}>{mestre}</Text>
       </View>
-    </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Vagas:</Text>
+        <Text style={styles.value}>{vagas}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Dia:</Text>
+        <Text style={styles.value}>{dia}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Horário:</Text>
+        <Text style={styles.value}>{horario}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Preço:</Text>
+        <Text style={styles.value}>R${preco}</Text>
+      </View>
+      <TouchableOpacity style={styles.entrarButton} onPress={onEntrarPress}>
+        <Text style={styles.entrarButtonText}>Entrar</Text>
+      </TouchableOpacity>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     borderRadius: 10,
-    margin: 10,
+    padding: 20,
+    marginVertical: 10,
+    marginHorizontal: 15,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 3,
-    padding: 10,
-  },
-  imageContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  image: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-  rightContainer: {
-    flex: 1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  subtitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: 'black',
+    color: '#666',
   },
-  tagContainer: {
-    backgroundColor: '#900',
-    borderRadius: 5,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  tagText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  info: {
-    marginLeft: 6,
+  descricao: {
     fontSize: 14,
-    color: 'black',
+    color: '#888',
+    marginVertical: 10,
   },
-  description: {
-    fontSize: 12,
-    color: 'grey',
-    marginTop: 10,
+  row: {
+    flexDirection: 'row',
+    marginVertical: 2,
   },
-  button: {
-    backgroundColor: '#8B0000',
-    paddingVertical: 10,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: 'white',
+  label: {
     fontWeight: 'bold',
+    color: '#333',
+  },
+  value: {
+    color: '#555',
+    marginLeft: 5,
+  },
+  entrarButton: {
+    backgroundColor: '#8B0000',
+    borderRadius: 5,
+    paddingVertical: 10,
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  entrarButtonText: {
+    color: '#fff',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
