@@ -79,21 +79,19 @@ const Pesquisa = () => {
       const usuarioJaNaMesa = mesa.usuarioJaNaMesa;
   
       if (usuarioJaNaMesa) {
-        
         Alert.alert(
           'Sucesso',
           'Retorne à aventura!',
           [
             {
               text: 'Continuar',
-              onPress: () => navigation.navigate('Chat'),
+              onPress: () => navigation.navigate('Chat', { mesaId }),
             },
           ],
           { cancelable: false }
         );
   
       } else if (mesa.vagasDisponiveis <= 0) {
-        
         alert('Desculpe, esta mesa está cheia. Tente outra!');
       } else {
         await entrarNaMesa(mesaId);
@@ -103,17 +101,17 @@ const Pesquisa = () => {
           [
             {
               text: 'Continuar',
-              onPress: () => navigation.navigate('Chat'),
+              onPress: () => navigation.navigate('Chat', { mesaId }),
             },
           ],
           { cancelable: false }
         );
-        
       }
     } catch (error) {
       alert('Erro ao entrar na mesa. Tente novamente.');
     }
   };
+  
   
 
   const handleAdicionarMesaPress = () => {
