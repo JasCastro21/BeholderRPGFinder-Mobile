@@ -24,7 +24,8 @@ export default function Chat({ route }) {
         setMesa(mesaData.data[0]);
         await fetchParticipants(route.params.mesaId);
         await fetchMessages(route.params.mesaId);
-        setEu(await fetchUserData().id)
+        const userData = await fetchUserData();
+        setEu(userData.id);
       } catch (error) {
         console.error('Erro ao buscar dados da mesa:', error);
       }
@@ -101,7 +102,7 @@ const fetchMessages = async (mesaId) => {
   };
 
   const renderMessageItem = ({ item }) => {
-    const authorName = findAuthorName(item.autor);
+    const authorName = item.autor === eu ? 'Eu' : findAuthorName(item.autor);
     const isSentByMe = item.autor === eu;
     return (
       <View style={isSentByMe ? styles.sentMessage : styles.receivedMessage}>
@@ -110,6 +111,7 @@ const fetchMessages = async (mesaId) => {
       </View>
     );
   };
+  
   
 
   const ParticipantsList = ({ participants }) => {
@@ -211,13 +213,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   sentMessage: {
-    backgroundColor: '#FFDBDB',
+    backgroundColor: '#ffffff', // Altera o fundo para branco
     alignSelf: 'flex-end',
     marginTop: 10, // Aumenta o espaçamento entre as mensagens
     marginBottom: 10, // Aumenta o espaçamento entre as mensagens
     borderRadius: 30, // Aumenta o tamanho do balão da mensagem
     borderBottomRightRadius: 10, // Aumenta o tamanho do balão da mensagem
-    width: '100%', // Ocupa a tela inteira lateralmente
+    width: '85%', // Ocupa a tela inteira lateralmente
   },
   receivedMessage: {
     backgroundColor: '#ffffff',
@@ -227,18 +229,21 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10, // Aumenta o tamanho do balão da mensagem
     marginTop: 10, // Aumenta o espaçamento entre as mensagens
     marginBottom: 10, // Aumenta o espaçamento entre as mensagens
-    width: '100%', // Ocupa a tela inteira lateralmente
+    width: '85%', // Ocupa a tela inteira lateralmente
   },
   messageText: {
     fontSize: 16,
-    marginLeft: 20, // Aumenta a margem esquerda para mover o texto para a direita
+    marginRight: 20, // Adiciona margem à direita para mensagens enviadas
+    marginLeft: 20, // Adiciona margem à esquerda para mensagens recebidas
   },
   authorName: {
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 2,
     color: '#8B0000', // Cor do nome do autor
-    marginLeft: 20, // Aumenta a margem esquerda para mover o nome do autor para a direita
+    textAlign: 'right', // Alinha o nome do autor à direita
+    marginRight: 20, // Adiciona margem à direita para melhorar a aparência
+    marginLeft: 20, // Adiciona margem à esquerda para melhorar a aparência
   },
   inputContainer: {
     flexDirection: 'row',
