@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import { getMesas } from '../../services/api/mesa';
 import { getUsuarioPorId } from '../../services/api/usuario';
 import { entrarNaMesa } from '../../services/api/usuario';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'; // Importe o useNavigation aqui
 import CardM from '../../components/CardM'; 
 
 import { listarUsuariosDaMesa } from '../../services/api/usuariomesa';
 import { fetchUserData } from '../../services/utils/auth';
 
 const Pesquisa = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation(); // Use o hook useNavigation
 
   const [mesas, setMesas] = useState([]);
   const [userId, setUserId] = useState(null);
@@ -74,21 +74,42 @@ const Pesquisa = () => {
       const usuarioJaNaMesa = mesa.usuarioJaNaMesa;
   
       if (usuarioJaNaMesa) {
-        // Se o usuário já estiver na mesa, podemos implementar a lógica para sair da mesa aqui
-        alert('Você está retornando à mesa!');
-        // Implemente a lógica para sair da mesa aqui
+        
+        Alert.alert(
+          'Sucesso',
+          'Retorne à aventura!',
+          [
+            {
+              text: 'Continuar',
+              onPress: () => navigation.navigate('Chat'),
+            },
+          ],
+          { cancelable: false }
+        );
+  
       } else if (mesa.vagasDisponiveis <= 0) {
-        // Se não houver vagas disponíveis, exiba uma mensagem de erro
+        
         alert('Desculpe, esta mesa está cheia. Tente outra!');
       } else {
         await entrarNaMesa(mesaId);
-        alert('Você entrou na mesa com sucesso!');
-        // Aqui você pode adicionar lógica adicional, como redirecionar o usuário para a página da mesa
+        Alert.alert(
+          'Sucesso',
+          'Mesa criada com sucesso!',
+          [
+            {
+              text: 'Continuar',
+              onPress: () => navigation.navigate('Chat'),
+            },
+          ],
+          { cancelable: false }
+        );
+        
       }
     } catch (error) {
       alert('Erro ao entrar na mesa. Tente novamente.');
     }
   };
+  
 
   const handleAdicionarMesaPress = () => {
     navigation.navigate('CriarMesa');
