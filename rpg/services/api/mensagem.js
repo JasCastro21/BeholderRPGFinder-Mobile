@@ -17,6 +17,7 @@ export const enviarMensagem = async (id, mensagem) => {
       withCredentials: true,
     };
 
+    console.log("Mensagem: ", mensagem)
     const response = await api.post(`/mensagens/${id}`, mensagem, config);
 
     return response.data;

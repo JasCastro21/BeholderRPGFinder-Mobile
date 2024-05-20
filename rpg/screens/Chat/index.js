@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Tab from '../../components/Tab';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getMesa } from '../../services/api/mesa';
 import { listarUsuariosDaMesa } from '../../services/api/usuariomesa';
@@ -32,8 +31,15 @@ export default function Chat({ route }) {
     };
     
     fetchData();
+
+    // Atualizar mensagens a cada 5 segundos
+    const interval = setInterval(() => {
+      fetchMessages(route.params.mesaId);
+    }, 5000);
+
+    // Limpar intervalo ao desmontar o componente
+    return () => clearInterval(interval);
   }, [route.params.mesaId]);
-  
 
   const fetchParticipants = async (mesaId) => {
     try {
@@ -56,45 +62,28 @@ export default function Chat({ route }) {
     return author ? author.usuario.nome : 'Desconhecido';
   };
 
-const fetchMessages = async (mesaId) => {
-  try {
-    const token = await AsyncStorage.getItem('BeholderToken');
-    const messagesData = await listarMensagens(mesaId, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    for (const message of messagesData) {
-      console.log("----------------------------------")
-
-      console.log("Mensagem sendo iterada: ", message)
-      console.log("ID do autor: ", message.autor)
-
-      console.log("----------------------------------")
-    }
-
-    setMessages(messagesData);
-  } catch (error) {
-    console.error('Erro ao buscar mensagens: ', error);
-    Alert.alert('Erro', 'Não foi possível carregar as mensagens.');
-  }
-};
-;
-
-  const sendMessage = async () => {
+  const fetchMessages = async (mesaId) => {
     try {
       const token = await AsyncStorage.getItem('BeholderToken');
-      const response = await enviarMensagem(mesa.id, {
-        text: newMessageText,
-        senderId: 'me', 
-      }, {
+      const messagesData = await listarMensagens(mesaId, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      setMessages(messagesData);
+    } catch (error) {
+      console.error('Erro ao buscar mensagens: ', error);
+      Alert.alert('Erro', 'Não foi possível carregar as mensagens.');
+    }
+  };
+
+  const sendMessage = async () => {
+    try {
+      const token = await AsyncStorage.getItem('BeholderToken');
+      const response = await enviarMensagem(mesa.id, { mensagem: newMessageText }, { headers: { Authorization: `Bearer ${token}` } });
       setNewMessageText('');
-      setMessages([...messages, response]);
+      fetchMessages(mesa.id); // Atualiza as mensagens após enviar
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
       Alert.alert('Erro', 'Não foi possível enviar a mensagem.');
@@ -112,8 +101,6 @@ const fetchMessages = async (mesaId) => {
     );
   };
   
-  
-
   const ParticipantsList = ({ participants }) => {
     return (
       <View style={styles.participantsContainer}>
@@ -159,7 +146,6 @@ const fetchMessages = async (mesaId) => {
           <Icon name="send" size={20} color="#fff" />
         </TouchableOpacity>
       </View>
-      <Tab />
     </View>
   );
 }
@@ -213,39 +199,40 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   sentMessage: {
-    backgroundColor: '#ffffff', // Altera o fundo para branco
+    backgroundColor: '#ffffff',
     alignSelf: 'flex-end',
-    marginTop: 10, // Aumenta o espaçamento entre as mensagens
-    marginBottom: 10, // Aumenta o espaçamento entre as mensagens
-    borderRadius: 10, // Raio da parte superior do balão de mensagem enviado
-    borderBottomRightRadius: 30, // Raio da parte inferior direita do balão de mensagem enviado
-    borderTopLeftRadius: 30, // Raio da parte superior esquerda do balão de mensagem enviado (para a seta)
-    width: '85%', // Ocupa a tela inteira lateralmente
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 10,
+    borderBottomRightRadius: 30,
+    borderTopLeftRadius: 30,
+    width: '85%',
   },
   receivedMessage: {
     backgroundColor: '#ffffff',
     alignSelf: 'flex-start',
-    alignItems: 'flex-start', // Alinha o texto à esquerda
-    borderRadius: 10, // Raio da parte superior do balão de mensagem recebido
-    borderBottomLeftRadius: 30, // Raio da parte inferior esquerda do balão de mensagem recebido
-    borderTopRightRadius: 30, // Raio da parte superior direita do balão de mensagem recebido (para a seta)
-    marginTop: 10, // Aumenta o espaçamento entre as mensagens
-    marginBottom: 10, // Aumenta o espaçamento entre as mensagens
-    width: '85%', // Ocupa a tela inteira lateralmente
+   
+    alignItems: 'flex-start',
+    borderRadius: 10,
+    borderBottomLeftRadius: 30,
+    borderTopRightRadius: 30,
+    marginTop: 10,
+    marginBottom: 10,
+    width: '85%',
   },
   messageText: {
     fontSize: 16,
-    marginRight: 20, // Adiciona margem à direita para mensagens enviadas
-    marginLeft: 20, // Adiciona margem à esquerda para mensagens recebidas
+    marginRight: 20,
+    marginLeft: 20,
   },
   authorName: {
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 2,
-    color: '#8B0000', // Cor do nome do autor
-    textAlign: 'right', // Alinha o nome do autor à direita
-    marginRight: 20, // Adiciona margem à direita para melhorar a aparência
-    marginLeft: 20, // Adiciona margem à esquerda para melhorar a aparência
+    color: '#8B0000',
+    textAlign: 'right',
+    marginRight: 20,
+    marginLeft: 20,
   },
   inputContainer: {
     flexDirection: 'row',
