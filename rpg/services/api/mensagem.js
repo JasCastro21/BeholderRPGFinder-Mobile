@@ -1,18 +1,15 @@
 import { api } from ".";
-import { getCookieValue } from "../utils/auth";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const enviarMensagem = async (id, mensagem) => {
   try {
-    // Obtenha o token do cookie ou de onde você o armazenou
-    const token = getCookieValue("BeholderToken");
+    const token = await AsyncStorage.getItem('BeholderToken');
 
-    // Verifique se há um token antes de fazer a solicitação
     if (!token) {
       alert("É necessário estar logado para enviar mensagens");
       return;
     }
 
-    // Configure o cabeçalho com o token
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -20,21 +17,29 @@ export const enviarMensagem = async (id, mensagem) => {
       withCredentials: true,
     };
 
-    // Corpo da requisição
-    const requestBody = mensagem;
-
-    const response = await api.post(`/mensagens/${id}`, requestBody, config);
+    const response = await api.post(`/mensagens/${id}`, mensagem, config);
 
     return response.data;
   } catch (error) {
-    alert("Contate um administrador. Erro: ", error);
+    if (error.response) {
+      // O servidor respondeu com um código de status fora do intervalo 2xx
+      console.log('Status do erro:', error.response.status);
+      console.log('Dados do erro:', error.response.data);
+      console.log('Cabeçalhos do erro:', error.response.headers);
+    } else if (error.request) {
+      // A solicitação foi feita, mas não houve resposta do servidor
+      console.log('Erro na solicitação:', error.request);
+    } else {
+      // Ocorreu um erro ao configurar a solicitação
+      console.log('Erro ao configurar a solicitação:', error.message);
+    }
     throw error;
   }
 };
 
 export const listarMensagens = async (id) => {
   try {
-    const token = getCookieValue("BeholderToken");
+    const token = await AsyncStorage.getItem('BeholderToken');
 
     if (!token) {
       alert("É necessário estar logado para listar mensagens");
@@ -51,7 +56,18 @@ export const listarMensagens = async (id) => {
     const response = await api.get(`/mensagens/${id}`, config);
     return response.data;
   } catch (error) {
-    alert("Contate um administrador. Erro: ", error);
+    if (error.response) {
+      // O servidor respondeu com um código de status fora do intervalo 2xx
+      console.log('Status do erro:', error.response.status);
+      console.log('Dados do erro:', error.response.data);
+      console.log('Cabeçalhos do erro:', error.response.headers);
+    } else if (error.request) {
+      // A solicitação foi feita, mas não houve resposta do servidor
+      console.log('Erro na solicitação:', error.request);
+    } else {
+      // Ocorreu um erro ao configurar a solicitação
+      console.log('Erro ao configurar a solicitação:', error.message);
+    }
     throw error;
   }
 };

@@ -2,45 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Tab from '../../components/Tab';
-import Chu1 from '../../img/chu3.png';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getMesa } from '../../services/api/mesa';
 import { listarUsuariosDaMesa } from '../../services/api/usuariomesa';
+import { enviarMensagem, listarMensagens } from '../../services/api/mensagem';
+import { fetchUserData } from '../../services/utils/auth';
 
 export default function Chat({ route }) {
-  const [messages, setMessages] = useState([
-    {
-      id: '1',
-      text: 'Olá, como você está?',
-      sentByMe: true,
-    },
-    {
-      id: '2',
-      text: 'Estou bem, obrigado! E você?',
-      sentByMe: false,
-      username: 'Amanda Amaral',
-      avatarURL: Chu1,
-    },
-  ]);
-
+  const [messages, setMessages] = useState([]);
   const [newMessageText, setNewMessageText] = useState('');
+  const [eu, setEu] = useState('');
   const [mesa, setMesa] = useState(null);
   const [showParticipants, setShowParticipants] = useState(false);
   const [participants, setParticipants] = useState([]);
 
   useEffect(() => {
-    const fetchMesa = async () => {
+    const fetchData = async () => {
       try {
         const mesaData = await getMesa(route.params.mesaId);
         console.log('Dados da mesa:', mesaData.data);
         setMesa(mesaData.data[0]);
+        await fetchParticipants(route.params.mesaId);
+        await fetchMessages(route.params.mesaId);
+        setEu(await fetchUserData().id)
       } catch (error) {
         console.error('Erro ao buscar dados da mesa:', error);
       }
     };
-
-    fetchMesa();
+    
+    fetchData();
   }, [route.params.mesaId]);
+  
 
   const fetchParticipants = async (mesaId) => {
     try {
@@ -58,33 +50,67 @@ export default function Chat({ route }) {
     }
   };
 
-  const sendMessage = () => {
-    if (newMessageText.trim().length > 0) {
-      const newMessage = {
-        id: Date.now().toString(),
+  const findAuthorName = (authorId) => {
+    const author = participants.find(participant => participant.usuario.id === authorId);
+    return author ? author.usuario.nome : 'Desconhecido';
+  };
+
+const fetchMessages = async (mesaId) => {
+  try {
+    const token = await AsyncStorage.getItem('BeholderToken');
+    const messagesData = await listarMensagens(mesaId, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    for (const message of messagesData) {
+      console.log("----------------------------------")
+
+      console.log("Mensagem sendo iterada: ", message)
+      console.log("ID do autor: ", message.autor)
+
+      console.log("----------------------------------")
+    }
+
+    setMessages(messagesData);
+  } catch (error) {
+    console.error('Erro ao buscar mensagens: ', error);
+    Alert.alert('Erro', 'Não foi possível carregar as mensagens.');
+  }
+};
+;
+
+  const sendMessage = async () => {
+    try {
+      const token = await AsyncStorage.getItem('BeholderToken');
+      const response = await enviarMensagem(mesa.id, {
         text: newMessageText,
-        sentByMe: true,
-      };
-      setMessages([...messages, newMessage]);
+        senderId: 'me', 
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setNewMessageText('');
+      setMessages([...messages, response]);
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error);
+      Alert.alert('Erro', 'Não foi possível enviar a mensagem.');
     }
   };
 
   const renderMessageItem = ({ item }) => {
-    return item.sentByMe ? (
-      <View style={[styles.message, styles.sentMessage]}>
-        <Text style={styles.messageText}>{item.text}</Text>
-      </View>
-    ) : (
-      <View style={[styles.message, styles.receivedMessage]}>
-        <Image source={item.avatarURL} style={styles.avatar} />
-        <View style={styles.messageInfo}>
-          <Text style={styles.username}>{item.username}</Text>
-          <Text style={styles.messageText}>{item.text}</Text>
-        </View>
+    const authorName = findAuthorName(item.autor);
+    const isSentByMe = item.autor === eu;
+    return (
+      <View style={isSentByMe ? styles.sentMessage : styles.receivedMessage}>
+        <Text style={styles.authorName}>{authorName}</Text>
+        <Text style={styles.messageText}>{item.texto}</Text>
       </View>
     );
   };
+  
 
   const ParticipantsList = ({ participants }) => {
     return (
@@ -187,34 +213,32 @@ const styles = StyleSheet.create({
   sentMessage: {
     backgroundColor: '#FFDBDB',
     alignSelf: 'flex-end',
-    marginRight: 10,
-    marginLeft: 50,
-    marginTop: 5,
-    marginBottom: 5,
-    borderRadius: 20,
-    borderBottomRightRadius: 5,
+    marginTop: 10, // Aumenta o espaçamento entre as mensagens
+    marginBottom: 10, // Aumenta o espaçamento entre as mensagens
+    borderRadius: 30, // Aumenta o tamanho do balão da mensagem
+    borderBottomRightRadius: 10, // Aumenta o tamanho do balão da mensagem
+    width: '100%', // Ocupa a tela inteira lateralmente
   },
   receivedMessage: {
     backgroundColor: '#ffffff',
     alignSelf: 'flex-start',
-    marginLeft: 10,
-    alignItems: 'center',
-    borderRadius: 20,
-    borderBottomLeftRadius: 5,
+    alignItems: 'flex-start', // Alinha o texto à esquerda
+    borderRadius: 30, // Aumenta o tamanho do balão da mensagem
+    borderBottomLeftRadius: 10, // Aumenta o tamanho do balão da mensagem
+    marginTop: 10, // Aumenta o espaçamento entre as mensagens
+    marginBottom: 10, // Aumenta o espaçamento entre as mensagens
+    width: '100%', // Ocupa a tela inteira lateralmente
   },
   messageText: {
     fontSize: 16,
+    marginLeft: 20, // Aumenta a margem esquerda para mover o texto para a direita
   },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  messageInfo: {
-    marginLeft: 10,
-  },
-  username: {
+  authorName: {
+    fontSize: 14,
     fontWeight: 'bold',
+    marginBottom: 2,
+    color: '#8B0000', // Cor do nome do autor
+    marginLeft: 20, // Aumenta a margem esquerda para mover o nome do autor para a direita
   },
   inputContainer: {
     flexDirection: 'row',
