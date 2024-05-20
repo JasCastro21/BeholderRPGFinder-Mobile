@@ -217,16 +217,18 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginTop: 10, // Aumenta o espaçamento entre as mensagens
     marginBottom: 10, // Aumenta o espaçamento entre as mensagens
-    borderRadius: 30, // Aumenta o tamanho do balão da mensagem
-    borderBottomRightRadius: 10, // Aumenta o tamanho do balão da mensagem
+    borderRadius: 10, // Raio da parte superior do balão de mensagem enviado
+    borderBottomRightRadius: 30, // Raio da parte inferior direita do balão de mensagem enviado
+    borderTopLeftRadius: 30, // Raio da parte superior esquerda do balão de mensagem enviado (para a seta)
     width: '85%', // Ocupa a tela inteira lateralmente
   },
   receivedMessage: {
     backgroundColor: '#ffffff',
     alignSelf: 'flex-start',
     alignItems: 'flex-start', // Alinha o texto à esquerda
-    borderRadius: 30, // Aumenta o tamanho do balão da mensagem
-    borderBottomLeftRadius: 10, // Aumenta o tamanho do balão da mensagem
+    borderRadius: 10, // Raio da parte superior do balão de mensagem recebido
+    borderBottomLeftRadius: 30, // Raio da parte inferior esquerda do balão de mensagem recebido
+    borderTopRightRadius: 30, // Raio da parte superior direita do balão de mensagem recebido (para a seta)
     marginTop: 10, // Aumenta o espaçamento entre as mensagens
     marginBottom: 10, // Aumenta o espaçamento entre as mensagens
     width: '85%', // Ocupa a tela inteira lateralmente
