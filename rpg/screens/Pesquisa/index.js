@@ -20,33 +20,38 @@ const Pesquisa = () => {
       try {
         const userData = await fetchUserData();
         const userId = userData.id; // Defina userId dentro da função fetchUserDataAndMesas
-  
+    
         const response = await getMesas();
         const mesasData = response.data;
-  
+    
         const mesasComMestre = [];
         for (const mesa of mesasData) {
           const mestreResponse = await getUsuarioPorId(mesa.mestre); 
+          console.log("Dados do mestre:", mestreResponse.data); // Adiciona este console.log para depurar
+    
           const usuariosDaMesaResponse = await listarUsuariosDaMesa(mesa.id);
-  
+    
           const [mestreResponseData, usuariosDaMesaResponseData] = await Promise.all([mestreResponse, usuariosDaMesaResponse]);
-  
+    
           const usuariosNaMesa = usuariosDaMesaResponseData.data.map(usuario => usuario.usuario.id);
           const usuarioJaNaMesa = usuariosNaMesa.includes(userId);
-  
+
+
+    
           mesasComMestre.push({
             ...mesa,
-            mestreNome: mestreResponseData.data.nome,
+            mestreNome: mestreResponseData.data[0].nome,
             usuarioJaNaMesa,
             vagasDisponiveis: mesa.vagas
           });
         }
-  
+    
         setMesas(mesasComMestre);
       } catch (error) {
         console.error('Erro ao buscar dados do usuário e mesas:', error);
       }
     };
+    
   
     const fetchData = async () => {
       try {
