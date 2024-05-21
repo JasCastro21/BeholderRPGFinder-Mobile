@@ -6,8 +6,10 @@ import { getMesa } from '../../services/api/mesa';
 import { listarUsuariosDaMesa } from '../../services/api/usuariomesa';
 import { enviarMensagem, listarMensagens } from '../../services/api/mensagem';
 import { fetchUserData } from '../../services/utils/auth';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Chat({ route }) {
+  const navigation = useNavigation();
   const [messages, setMessages] = useState([]);
   const [newMessageText, setNewMessageText] = useState('');
   const [eu, setEu] = useState('');
@@ -91,8 +93,7 @@ export default function Chat({ route }) {
   };
 
   const handleEditMesa = () => {
-    // Função para lidar com a edição dos dados da mesa
-    Alert.alert('Editar', 'Função de edição ainda não implementada');
+    navigation.navigate('EditarMesa')
   };
 
   const renderMessageItem = ({ item }) => {
