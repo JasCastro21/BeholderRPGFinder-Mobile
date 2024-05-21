@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
+import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getMesa } from '../../services/api/mesa';
@@ -90,6 +90,11 @@ export default function Chat({ route }) {
     }
   };
 
+  const handleEditMesa = () => {
+    // Função para lidar com a edição dos dados da mesa
+    Alert.alert('Editar', 'Função de edição ainda não implementada');
+  };
+
   const renderMessageItem = ({ item }) => {
     const authorName = item.autor === eu ? 'Eu' : findAuthorName(item.autor);
     const isSentByMe = item.autor === eu;
@@ -125,6 +130,14 @@ export default function Chat({ route }) {
           }}
         >
           <Text style={styles.titleText}>{mesa.titulo}</Text>
+          {mesa.mestre === eu && (
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={handleEditMesa}
+            >
+              <Icon name="edit" size={20} color="#ffffff" />
+            </TouchableOpacity>
+          )}
         </TouchableOpacity>
       )}
       {showParticipants && <ParticipantsList participants={participants} />}
@@ -155,14 +168,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titleContainer: {
+    flexDirection: 'row',
     backgroundColor: '#8B0000',
     padding: 10,
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   titleText: {
     color: '#ffffff',
     fontSize: 18,
     fontWeight: 'bold',
+    flex: 1,
+  },
+  editButton: {
+    marginLeft: 10,
   },
   participantsContainer: {
     padding: 10,
@@ -211,7 +230,6 @@ const styles = StyleSheet.create({
   receivedMessage: {
     backgroundColor: '#ffffff',
     alignSelf: 'flex-start',
-   
     alignItems: 'flex-start',
     borderRadius: 10,
     borderBottomLeftRadius: 30,
