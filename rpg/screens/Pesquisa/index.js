@@ -97,7 +97,7 @@ const Pesquisa = () => {
         await entrarNaMesa(mesaId);
         Alert.alert(
           'Sucesso',
-          'Mesa criada com sucesso!',
+          'Embarque em sua nova aventura!',
           [
             {
               text: 'Continuar',
