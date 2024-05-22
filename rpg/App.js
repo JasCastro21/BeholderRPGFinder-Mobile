@@ -17,6 +17,7 @@ import Mencoes from './screens/Mencoes';
 import Conversa from './screens/Conversa';
 import CriarMesa from './components/CriarMesa';
 import EditarMesa from './screens/EditarMesa';
+import EditarPerfil from './screens/EditarPerfil';
 
 const Stack = createStackNavigator();
 
@@ -64,6 +65,7 @@ export default function App() {
         <Stack.Screen name="Conversa" component={Conversa} options={{ headerShown: true }} />
         <Stack.Screen name="CriarMesa" component={CriarMesa} options={{ headerShown: true }} />
         <Stack.Screen name="EditarMesa" component={EditarMesa} options={{ headerShown: true }} />
+        <Stack.Screen name="EditarPerfil" component={EditarPerfil} options={{ headerShown: true }} />
 
       </Stack.Navigator>
     </NavigationContainer>

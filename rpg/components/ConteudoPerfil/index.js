@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchUserData } from '../../services/utils/auth';
+import { useNavigation } from '@react-navigation/native';
 import chu1 from '../../img/7.png';
 import fundo1 from '../../img/chu3.png';
 
@@ -18,6 +19,7 @@ const posts = [
 
 const ConteudoPerfil = () => {
   const [userData, setUserData] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -43,6 +45,12 @@ const ConteudoPerfil = () => {
     </View>
   );
 
+  const handleEditProfile = () => {
+    if (userData) {
+      navigation.navigate('EditarPerfil', { id: userData.id });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -51,8 +59,9 @@ const ConteudoPerfil = () => {
           <Text style={styles.name}>{userData ? userData.nome : "Carregando..."}</Text>
           <Text style={styles.email}>{userData ? userData.email : ""}</Text>
           <Text style={styles.xp}>XP: {userData ? userData.xp : 0}</Text>
+          <Text style={styles.description}>{userData ? userData.descricao : ""}</Text>
         </View>
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
           <Text style={styles.editButtonText}>Editar Perfil</Text>
         </TouchableOpacity>
       </View>
@@ -96,6 +105,11 @@ const styles = StyleSheet.create({
   xp: {
     marginTop: 8,
     fontSize: 16,
+  },
+  description: {
+    marginTop: 8,
+    fontSize: 14,
+    color: 'gray',
   },
   editButton: {
     backgroundColor: '#d32f2f',

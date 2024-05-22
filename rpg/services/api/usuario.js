@@ -1,6 +1,7 @@
 import { api } from ".";
 import { buscarTema } from "../api/tema";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { fetchUserData } from "../utils/auth";
 
 export const criarNovoUsuario = async (data) => {
   if (data.datanascimento) {
@@ -90,6 +91,26 @@ export const entrarNaMesa = async (mesaId) => {
     return response;
   } catch (error) {
     console.error('Erro ao entrar na mesa:', error);
+    throw error;
+  }
+};
+
+export const editarPerfil = async (camposEditados) => {
+  try {
+    const userData = fetchUserData();
+    const userId = userData.id
+    const token = await AsyncStorage.getItem('BeholderToken');
+
+    console.log("ID editar perfil: ", userData);
+    console.log("Token editar perfil: ", token)
+    console.log("Campos editados: ", camposEditados)
+    const response = await api.patch(`/usuarios/atualizar/`, {userId, ...camposEditados}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    return response.data;
+  } catch (error) {
     throw error;
   }
 };
