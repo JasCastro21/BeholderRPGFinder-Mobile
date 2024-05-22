@@ -1,221 +1,234 @@
-import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from "react-native";
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
+import { editarMesa } from '../../services/api/mesa';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { fetchUserData } from '../../services/utils/auth';
 
-export default function EditarMesa({ route }) {
-  const [mesa, setMesa] = useState({
-    id: "",
-    titulo: "",
-    subtitulo: "",
-    sistema: "",
-    descricao: "",
-    criado_em: "",
-    dia: "",
-    horario: "",
-    periodo: "",
-    preco: 0,
-    vagas: 0,
-    mestre: "",
-  });
+const EditarMesa = ({ route }) => {
+  const navigation = useNavigation();
+  const [titulo, setTitulo] = useState(route.params.mesa.titulo);
+  const [subtitulo, setSubtitulo] = useState(route.params.mesa.subtitulo);
+  const [sistema, setSistema] = useState(route.params.mesa.sistema);
+  const [descricao, setDescricao] = useState(route.params.mesa.descricao);
+  const [data, setData] = useState(route.params.mesa.data); 
+  const [horario, setHorario] = useState(route.params.mesa.horario);
+  const [periodo, setPeriodo] = useState(route.params.mesa.periodo);
+  const [dia, setDia] = useState(route.params.mesa.dia);
+  const [preco] = useState(route.params.mesa.preco);
+  const [vagas] = useState(route.params.mesa.vagas);
 
-  useEffect(() => {
-    // Função para buscar os dados da mesa ao carregar a página
-    const fetchMesaData = async () => {
-      try {
-        // Simulando fetch de dados da mesa
-        const fetchedMesa = {
-          id: "60934a5e-7f8e-4913-9e5f-90a8c76ade8e",
-          titulo: "Mesa do Helldin",
-          subtitulo: "Subtitulo bom",
-          sistema: "Fate",
-          descricao: "descrição boa",
-          criado_em: "2023-12-13T22:46:22.061508+00:00",
-          dia: "Diária",
-          horario: "22:00:00",
-          periodo: "diaria",
-          preco: 1,
-          vagas: 4,
-          mestre: "1408f1b9-501d-45d2-a877-f6872f153aee",
-          chat: "16a136bb-fb19-41c7-8ec2-0f5fec3e04cc",
-        };
-        setMesa(fetchedMesa);
-      } catch (error) {
-        console.error("Erro ao buscar dados da mesa:", error);
-        Alert.alert("Erro", "Não foi possível carregar os dados da mesa.");
-      }
+  const handleSubmit = async () => {
+    const userData = await fetchUserData();
+
+    const payload = {
+      id: route.params.mesa.id,
+      titulo,
+      subtitulo,
+      sistema,  
+      descricao,
+      data,
+      horario,
+      periodo,
+      dia
     };
 
-    fetchMesaData();
-  }, []);
+    console.log("____________________________________")
+    console.log("PAYLOAD editar mesa")
+    console.log(payload)
+    console.log("____________________________________")
 
-  const handleSave = () => {
-    // Função para salvar os dados da mesa
-    Alert.alert("Salvar", "Dados da mesa salvos com sucesso!");
+    // Função para remover propriedades vazias do payload
+    function removerPropriedadesVazias(payload) {
+      for (const key in payload) {
+        if (payload[key] === '') {
+          delete payload[key];
+        }
+      }
+      return payload;
+    }
+
+    // Removendo propriedades vazias do payload antes de enviar
+    const payloadLimpo = removerPropriedadesVazias(payload);
+
+    try {
+      const token = await AsyncStorage.getItem("BeholderToken");
+      if (!token) {
+        throw new Error("Token não encontrado");
+      }
+
+      const response = await editarMesa(route.params.mesa.id, userData.id, payloadLimpo, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      Alert.alert(
+        'Sucesso',
+        'Mesa editada com sucesso!',
+        [
+          {
+            text: 'Continuar',
+            onPress: () => navigation.goBack(),
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      console.error("Erro ao editar a mesa:", error);
+      Alert.alert('Erro', 'Houve um problema ao editar a mesa.');
+    }
   };
 
+  const diasMes = Array.from({ length: 31 }, (_, i) => ({
+    label: (i + 1).toString(),
+    value: (i + 1).toString()
+  }));
+
+  const diasSemana = [
+    { label: 'Domingo', value: 'Domingo' },
+    { label: 'Segunda-feira', value: 'Segunda-feira' },
+    { label: 'Terça-feira', value: 'Terça-feira' },
+    { label: 'Quarta-feira', value: 'Quarta-feira' },
+    { label: 'Quinta-feira', value: 'Quinta-feira' },
+    { label: 'Sexta-feira', value: 'Sexta-feira' },
+    { label: 'Sábado', value: 'Sábado' },
+  ];
+
+  const horarios = Array.from({ length: 24 }, (_, i) => ({
+    label: `${i.toString().padStart(2, '0')}:00`,
+    value: `${i.toString().padStart(2, '0')}:00:00`
+  }));
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>{mesa.titulo}</Text>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>ID da Mesa</Text>
-        <Text style={styles.nonEditable}>{mesa.id}</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.label}>Título</Text>
+      <TextInput style={styles.input} value={titulo} onChangeText={setTitulo} />
+
+      <Text style={styles.label}>Subtítulo</Text>
+      <TextInput style={styles.input} value={subtitulo} onChangeText={setSubtitulo} />
+
+      <Text style={styles.label}>Sistema</Text>
+      <TextInput style={styles.input} value={sistema} onChangeText={setSistema} />
+
+      <Text style={styles.label}>Descrição</Text>
+      <TextInput style={styles.input} value={descricao} onChangeText={setDescricao} multiline />
+
+      <Text style={styles.label}>Preço</Text>
+      <View style={styles.nonEditableField}>
+        <Text>{preco}</Text>
       </View>
 
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Título</Text>
-        <TextInput
-          style={styles.input}
-          value={mesa.titulo}
-          onChangeText={(text) => setMesa({ ...mesa, titulo: text })}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Subtítulo</Text>
-        <TextInput
-          style={styles.input}
-          value={mesa.subtitulo}
-          onChangeText={(text) => setMesa({ ...mesa, subtitulo: text })}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Sistema</Text>
-        <TextInput
-          style={styles.input}
-          value={mesa.sistema}
-          onChangeText={(text) => setMesa({ ...mesa, sistema: text })}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Descrição</Text>
-        <TextInput
-          style={styles.input}
-          value={mesa.descricao}
-          onChangeText={(text) => setMesa({ ...mesa, descricao: text })}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Dia</Text>
-        <TextInput
-          style={styles.input}
-          value={mesa.dia}
-          onChangeText={(text) => setMesa({ ...mesa, dia: text })}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Horário</Text>
-        <TextInput
-          style={styles.input}
-          value={mesa.horario}
-          onChangeText={(text) => setMesa({ ...mesa, horario: text })}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Período</Text>
-        <TextInput
-          style={styles.input}
-          value={mesa.periodo}
-          onChangeText={(text) => setMesa({ ...mesa, periodo: text })}
-        />
+      <Text style={styles.label}>Vagas</Text>
+      <View style={styles.nonEditableField}>
+        <Text>{vagas}</Text>
       </View>
 
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Vagas</Text>
-        <Text style={styles.nonEditable}>{mesa.vagas}</Text>
-      </View>
+      {(periodo === 'Mensal') && (
+        <>
+          <Text style={styles.label}>Dia do Mês</Text>
+          <RNPickerSelect
+            onValueChange={(value) => setDia(value)} 
+            items={diasMes}
+            style={pickerSelectStyles}
+          />
+        </>
+      )}
 
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Preço</Text>
-        <Text style={styles.nonEditable}>{mesa.preco}</Text>
-      </View>
+      <Text style={styles.label}>Horário</Text>
+      <RNPickerSelect
+        onValueChange={setHorario}
+        items={horarios}
+        style={pickerSelectStyles}
+      />
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Salvar</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.participantsButton}
-        onPress={() =>
-          Alert.alert(
-            "Participantes",
-            "Função de participantes ainda não implementada"
-          )
-        }
-      >
-        <Text style={styles.participantsButtonText}>Participantes</Text>
-      </TouchableOpacity>
+      <Text style={styles.label}>Período</Text>
+      <RNPickerSelect
+        onValueChange={(value) => {
+          setPeriodo(value);
+          if (value === 'Diária') setDia('');
+          if (value !== 'Semanal') setDia('');
+        }}
+        items={[
+          { label: 'Diária', value: 'Diária' },
+          { label: 'Semanal', value: 'Semanal' },
+          { label: 'Mensal', value: 'Mensal' }
+        ]}
+        style={pickerSelectStyles}
+      />
+
+      {periodo === 'Semanal' && (
+        <>
+          <Text style={styles.label}>Dia da Semana</Text>
+          <RNPickerSelect
+            onValueChange={setDia}
+            items={diasSemana}
+            style={pickerSelectStyles}
+          />
+        </>
+      )}
+
+      <View style={styles.buttonContainer}>
+        <Button title="Salvar" onPress={handleSubmit} color="#8B0000" />
+      </View>
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#8B0000",
-  },
-  formGroup: {
-    marginBottom: 15,
   },
   label: {
+    marginTop: 10,
     fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: "#8B0000",
+    fontWeight: 'bold'
   },
   input: {
     borderWidth: 1,
-    borderColor: "#8B0000",
-    borderRadius: 5,
+    borderColor: '#ccc',
     padding: 10,
-    fontSize: 16,
-    backgroundColor: "#f0f0f0",
+    marginTop: 5,
+    borderRadius: 5
   },
-  saveButton: {
-    backgroundColor: "#8B0000",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 20,
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  participantsButton: {
-    backgroundColor: "#f0f0f0",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 20,
+  nonEditableField: {
     borderWidth: 1,
-    borderColor: "#8B0000",
-  },
-  participantsButtonText: {
-    color: "#8B0000",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  nonEditable: {
-    borderWidth: 1,
-    borderColor: "#c4c4c4",
-    borderRadius: 5,
+    borderColor: '#c4c4c4',
     padding: 10,
-    fontSize: 16,
-    backgroundColor: "#c4c4c4",
-    marginBottom: 10,
+    marginTop: 5,
+    borderRadius: 5,
+    backgroundColor: '#c4c4c4',
   },
+  buttonContainer: {
+    marginTop: 20,
+    marginBottom: 20
+  }
 });
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30,
+    marginTop: 5
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30,
+    marginTop: 5
+  }
+});
+
+export default EditarMesa;

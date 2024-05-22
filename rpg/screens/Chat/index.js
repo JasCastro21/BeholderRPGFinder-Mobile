@@ -93,8 +93,9 @@ export default function Chat({ route }) {
   };
 
   const handleEditMesa = () => {
-    navigation.navigate('EditarMesa')
+    navigation.navigate('EditarMesa', { mesa: mesa });
   };
+  
 
   const renderMessageItem = ({ item }) => {
     const authorName = item.autor === eu ? 'Eu' : findAuthorName(item.autor);

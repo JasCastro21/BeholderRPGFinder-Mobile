@@ -6,14 +6,13 @@ import { criarMesa } from '../../services/api/mesa';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
-
 const CriarMesa = () => {
   const navigation = useNavigation();
   const [titulo, setTitulo] = useState('');
   const [subtitulo, setSubtitulo] = useState('');
   const [sistema, setSistema] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [data, setData] = useState(new Date());
+  const [data, setData] = useState('');
   const [horario, setHorario] = useState('');
   const [periodo, setPeriodo] = useState('Diária');
   const [dia, setDia] = useState('');
@@ -22,7 +21,6 @@ const CriarMesa = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleSubmit = async () => {
-    const formattedDate = data.toISOString().split('T')[0];
   
     let diaValue = periodo === 'Diária' ? 'Diária' : dia;
   
@@ -31,14 +29,13 @@ const CriarMesa = () => {
       subtitulo,
       sistema,
       descricao,
-      data: formattedDate,
+      data,
       horario,
       periodo,
       dia: diaValue === '' ? 'Diária' : diaValue,
       preco: preco === 'Grátis' ? 0 : parseInt(preco, 10),
-      vagas: parseInt(vagas, 10)
+      vagas: parseInt(vagas, 10) + 1
     };
-  
   
     try {
       const token = await AsyncStorage.getItem("BeholderToken");
@@ -51,6 +48,9 @@ const CriarMesa = () => {
           Authorization: `Bearer ${token}`
         }
       });
+
+      const mesaId = response.data.mesa.data[0].id;
+      console.log("response criar mesa: ", response)
   
       Alert.alert(
         'Sucesso',
@@ -58,7 +58,7 @@ const CriarMesa = () => {
         [
           {
             text: 'Continuar',
-            onPress: () => navigation.navigate('Chat'),
+            onPress: () => navigation.navigate('Chat', {mesaId}),
           },
         ],
         { cancelable: false }
@@ -115,28 +115,6 @@ const CriarMesa = () => {
       <Text style={styles.label}>Descrição</Text>
       <TextInput style={styles.input} value={descricao} onChangeText={setDescricao} multiline />
 
-      {periodo === 'Mensal' && (
-        <>
-          <Text style={styles.label}>Data</Text>
-          <Button title="Selecionar Data" onPress={() => setShowDatePicker(true)} />
-          {showDatePicker && (
-            <DatePicker
-              modal
-              open={showDatePicker}
-              date={data}
-              onConfirm={(date) => {
-                setShowDatePicker(false);
-                setData(date);
-              }}
-              onCancel={() => {
-                setShowDatePicker(false);
-              }}
-              mode="date"
-            />
-          )}
-        </>
-      )}
-
       <Text style={styles.label}>Horário</Text>
       <RNPickerSelect
         onValueChange={setHorario}
@@ -146,7 +124,10 @@ const CriarMesa = () => {
 
       <Text style={styles.label}>Período</Text>
       <RNPickerSelect
-        onValueChange={setPeriodo}
+        onValueChange={(value) => {
+          setPeriodo(value);
+          if (value !== 'Semanal') setDia('');
+        }}
         items={[
           { label: 'Diária', value: 'Diária' },
           { label: 'Semanal', value: 'Semanal' },
@@ -193,56 +174,56 @@ const CriarMesa = () => {
 
       <View style={styles.buttonContainer}>
         <Button title="Criar Mesa" onPress={handleSubmit} color="#8B0000" />
-      </View>
-    </ScrollView>
-  );
+</View>
+</ScrollView>
+);
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-  label: {
-    marginTop: 10,
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginTop: 5,
-    borderRadius: 5
-  },
-  buttonContainer: {
-    marginTop: 20,  // Adiciona espaçamento ao topo do botão
-    marginBottom: 20 // Adiciona espaçamento ao fundo do botão
-  }
+container: {
+padding: 20,
+},
+label: {
+marginTop: 10,
+fontSize: 16,
+fontWeight: 'bold'
+},
+input: {
+borderWidth: 1,
+borderColor: '#ccc',
+padding: 10,
+marginTop: 5,
+borderRadius: 5
+},
+buttonContainer: {
+marginTop: 20,
+marginBottom: 20
+}
 });
 
 const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    color: 'black',
-    paddingRight: 30,
-    marginTop: 5
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'purple',
-    borderRadius: 8,
-    color: 'black',
-    paddingRight: 30,
-    marginTop: 5
-  }
+inputIOS: {
+fontSize: 16,
+paddingVertical: 12,
+paddingHorizontal: 10,
+borderWidth: 1,
+borderColor: 'gray',
+borderRadius: 4,
+color: 'black',
+paddingRight: 30,
+marginTop: 5
+},
+inputAndroid: {
+fontSize: 16,
+paddingHorizontal: 10,
+paddingVertical: 8,
+borderWidth: 0.5,
+borderColor: 'purple',
+borderRadius: 8,
+color: 'black',
+paddingRight: 30,
+marginTop: 5
+}
 });
 
 export default CriarMesa;
