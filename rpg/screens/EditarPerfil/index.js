@@ -3,7 +3,6 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import Dialog from "react-native-dialog";
 import { fetchUserData } from "../../services/utils/auth";
 import { editarPerfil, excluirPerfil } from "../../services/api/usuario";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 export default function EditProfile() {
@@ -68,16 +67,6 @@ export default function EditProfile() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('BeholderToken');
-      navigation.navigate("Login");
-    } catch (error) {
-      console.error("Erro ao fazer logout:", error.message);
-      Alert.alert("Erro", "Ocorreu um erro ao fazer logout. Por favor, tente novamente mais tarde.");
-    }
-  };
-
   const promptForPassword = () => {
     setDialogVisible(true);
   };
@@ -129,9 +118,7 @@ export default function EditProfile() {
       <View style={styles.buttonContainer}>
         <Button title="Salvar" onPress={handleSubmit} color="#8b0000" />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Logout" onPress={handleLogout} color="#8b0000" />
-      </View>
+
       <View style={styles.deleteButtonContainer}>
         <Button title="Excluir" onPress={promptForPassword} color="#8b0000" />
       </View>

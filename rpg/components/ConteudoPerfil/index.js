@@ -45,6 +45,16 @@ const ConteudoPerfil = () => {
     </View>
   );
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('BeholderToken');
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error.message);
+      Alert.alert("Erro", "Ocorreu um erro ao fazer logout. Por favor, tente novamente mais tarde.");
+    }
+  };
+
   const handleEditProfile = () => {
     if (userData) {
       navigation.navigate('EditarPerfil', { id: userData.id });
@@ -65,12 +75,18 @@ const ConteudoPerfil = () => {
           <Text style={styles.editButtonText}>Editar Perfil</Text>
         </TouchableOpacity>
       </View>
+
       <FlatList
         data={posts}
         renderItem={renderPost}
         keyExtractor={(item) => item.id}
         style={styles.postsList}
       />
+
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };
@@ -139,6 +155,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 8,
   },
+  logoutButton: {
+    backgroundColor: '#d32f2f',
+    padding: 12,
+    borderRadius: 4,
+    marginTop: 16,
+    alignSelf: 'center',
+    width: '20%',
+    alignItems: 'center',
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  
+  
 });
 
 export default ConteudoPerfil;
