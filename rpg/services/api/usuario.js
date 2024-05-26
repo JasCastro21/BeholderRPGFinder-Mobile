@@ -114,3 +114,35 @@ export const editarPerfil = async (camposEditados) => {
     throw error;
   }
 };
+
+
+export const excluirPerfil = async (senha) => {
+  try {
+    // Obtenha o token do AsyncStorage
+    const token = await AsyncStorage.getItem('BeholderToken');
+
+    // Verifique se há um token antes de fazer a solicitação
+    if (!token) {
+      alert('Você não tem permissão para excluir este perfil, esta ação foi reportada');
+      return;
+    }
+
+    // Configure o cabeçalho com o token
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+      data: { senha },
+    };
+
+    const response = await api.delete(`/usuarios/excluir`, config);
+
+    console.log("RESPONSE: ", response)
+
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao excluir perfil:', error);
+    throw error;
+  }
+};
