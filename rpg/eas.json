@@ -3,7 +3,6 @@
     "version": ">= 9.0.8"
   },
   "build": {
-    "appName": "Beholder RPG Finder",
     "development": {
       "developmentClient": true,
       "distribution": "internal"
