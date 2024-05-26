@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Beholder RPG Finder",
-    "slug": "Beholder RPG Finder",
-    "version": "1.0.0",
+    "slug": "my-app",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
