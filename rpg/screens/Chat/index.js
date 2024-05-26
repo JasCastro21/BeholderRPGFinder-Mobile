@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Alert, Button } from 'react-native';
+import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Alert, Button, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getMesa } from '../../services/api/mesa';
@@ -17,6 +17,8 @@ export default function Chat({ route }) {
   const [mesa, setMesa] = useState(null);
   const [showParticipants, setShowParticipants] = useState(false);
   const [participants, setParticipants] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isInMesa, setIsInMesa] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,11 +27,15 @@ export default function Chat({ route }) {
         console.log('Dados da mesa:', mesaData.data);
         setMesa(mesaData.data[0]);
         await fetchParticipants(route.params.mesaId);
-        await fetchMessages(route.params.mesaId);
+        if (isInMesa) {
+          fetchMessages(route.params.mesaId);
+        }
         const userData = await fetchUserData();
         setEu(userData.id);
       } catch (error) {
         console.error('Erro ao buscar dados da mesa:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     
@@ -37,12 +43,14 @@ export default function Chat({ route }) {
 
     // Atualizar mensagens a cada 5 segundos
     const interval = setInterval(() => {
-      fetchMessages(route.params.mesaId);
+      if (isInMesa) {
+        fetchMessages(route.params.mesaId);
+      }
     }, 5000);
 
     // Limpar intervalo ao desmontar o componente
     return () => clearInterval(interval);
-  }, [route.params.mesaId]);
+  }, [route.params.mesaId, isInMesa]);
 
   const fetchParticipants = async (mesaId) => {
     try {
@@ -67,6 +75,7 @@ export default function Chat({ route }) {
 
   const fetchMessages = async (mesaId) => {
     try {
+
       const token = await AsyncStorage.getItem('BeholderToken');
       const messagesData = await listarMensagens(mesaId, {
         headers: {
@@ -99,19 +108,34 @@ export default function Chat({ route }) {
 
   const handleSairDaMesa = async () => {
     try {
-      await sairDaMesa(mesa.id);
-      navigation.navigate('PerfilUsuario');
+      Alert.alert(
+        'Confirmação',
+        'Tem certeza de que deseja sair da mesa?',
+        [
+          {
+            text: 'Cancelar',
+            style: 'cancel'
+          },
+          {
+            text: 'Confirmar',
+            onPress: async () => {
+              const mesaId = mesa.id;
+              await sairDaMesa(mesaId);
+              setIsInMesa(false); 
+              setMesa([])
+              navigation.navigate('Pesquisa');
+            }
+          }
+        ]
+      );
     } catch (error) {
-      console.error('Erro ao sair da mesa:', error);
       Alert.alert('Erro', 'Não foi possível sair da mesa.');
     }
   };
 
   const handleViewProfile = async (userId) => {
     try {
-      
-      navigation.navigate(`PerfilOutro`, userId)
-      
+      navigation.navigate('PerfilOutro', userId);
     } catch (error) {
       console.error('Erro ao buscar dados do usuário:', error);
       Alert.alert('Erro', 'Não foi possível carregar o perfil do usuário.');
@@ -150,6 +174,14 @@ export default function Chat({ route }) {
       </View>
     );
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -199,6 +231,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   titleContainer: {
     flexDirection: 'row',
     backgroundColor: '#8B0000',
@@ -220,7 +257,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     borderWidth: 1,
     borderColor: '#8B0000',
-    borderRadius: 10,
+    borderRadius: 
+    10,
     margin: 10,
   },
   participantsTitle: {

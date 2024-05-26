@@ -117,7 +117,6 @@ export const sairDaMesa = async (mesaId) => {
     
     const response = await api.post(
       `/usuarios/sair-da-mesa/${mesaId}`,
-      null,
       config
     );
     

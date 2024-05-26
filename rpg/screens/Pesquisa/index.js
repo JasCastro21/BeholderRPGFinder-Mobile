@@ -1,73 +1,76 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { getMesas } from '../../services/api/mesa';
 import { getUsuarioPorId } from '../../services/api/usuario';
 import { entrarNaMesa } from '../../services/api/usuario';
-import { useNavigation } from '@react-navigation/native'; // Importe o useNavigation aqui
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import CardM from '../../components/CardM'; 
-
 import { listarUsuariosDaMesa } from '../../services/api/usuariomesa';
 import { fetchUserData } from '../../services/utils/auth';
 
 const Pesquisa = () => {
-  const navigation = useNavigation(); // Use o hook useNavigation
-
+  const navigation = useNavigation();
   const [mesas, setMesas] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchUserDataAndMesas = async () => {
-      try {
-        const userData = await fetchUserData();
-        const userId = userData.id; // Defina userId dentro da função fetchUserDataAndMesas
-    
-        const response = await getMesas();
-        const mesasData = response.data;
-    
-        const mesasComMestre = [];
-        for (const mesa of mesasData) {
-          const mestreResponse = await getUsuarioPorId(mesa.mestre); 
-          console.log("Dados do mestre:", mestreResponse.data); // Adiciona este console.log para depurar
-    
-          const usuariosDaMesaResponse = await listarUsuariosDaMesa(mesa.id);
-    
-          const [mestreResponseData, usuariosDaMesaResponseData] = await Promise.all([mestreResponse, usuariosDaMesaResponse]);
-    
-          const usuariosNaMesa = usuariosDaMesaResponseData.data.map(usuario => usuario.usuario.id);
-          const usuarioJaNaMesa = usuariosNaMesa.includes(userId);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserDataAndMesas = async () => {
+        setIsLoading(true);
+        try {
 
+          setMesas([])
 
-    
-          mesasComMestre.push({
-            ...mesa,
-            mestreNome: mestreResponseData.data[0].nome,
-            usuarioJaNaMesa,
-            vagasDisponiveis: mesa.vagas
-          });
+          const userData = await fetchUserData();
+          const userId = userData.id; // Defina userId dentro da função fetchUserDataAndMesas
+
+          const response = await getMesas();
+          const mesasData = response.data;
+
+          const mesasComMestre = [];
+          for (const mesa of mesasData) {
+            const mestreResponse = await getUsuarioPorId(mesa.mestre); 
+            console.log("Dados do mestre:", mestreResponse.data); // Adiciona este console.log para depurar
+
+            const usuariosDaMesaResponse = await listarUsuariosDaMesa(mesa.id);
+
+            const [mestreResponseData, usuariosDaMesaResponseData] = await Promise.all([mestreResponse, usuariosDaMesaResponse]);
+
+            const usuariosNaMesa = usuariosDaMesaResponseData.data.map(usuario => usuario.usuario.id);
+            const usuarioJaNaMesa = usuariosNaMesa.includes(userId);
+
+            mesasComMestre.push({
+              ...mesa,
+              mestreNome: mestreResponseData.data[0].nome,
+              usuarioJaNaMesa,
+              vagasDisponiveis: mesa.vagas
+            });
+          }
+
+          setMesas(mesasComMestre);
+        } catch (error) {
+          console.error('Erro ao buscar dados do usuário e mesas:', error);
+        } finally {
+          setIsLoading(false);
         }
-    
-        setMesas(mesasComMestre);
-      } catch (error) {
-        console.error('Erro ao buscar dados do usuário e mesas:', error);
-      }
-    };
-    
-  
-    const fetchData = async () => {
-      try {
-        const userData = await fetchUserData();
-        console.log('ID do usuário fetchado pesquisa:', userData.id);
-        setUserId(userData.id);
-      } catch (error) {
-        console.error('Erro ao buscar dados do usuário:', error);
-      }
-    };
-  
-    fetchData();
-    fetchUserDataAndMesas(); // Chame fetchUserDataAndMesas após setUserId
-  
-  }, []); // Certifique-se de passar um array vazio como segundo argumento do useEffect
-  
+      };
+
+      const fetchData = async () => {
+        try {
+          const userData = await fetchUserData();
+          console.log('ID do usuário fetchado pesquisa:', userData.id);
+          setUserId(userData.id);
+        } catch (error) {
+          console.error('Erro ao buscar dados do usuário:', error);
+        }
+      };
+
+      fetchData();
+      fetchUserDataAndMesas(); // Chame fetchUserDataAndMesas após setUserId
+    }, [])
+  );
+
   const handleEntrarPress = async (mesaId) => {
     try {
       const mesa = mesas.find(m => m.id === mesaId);
@@ -75,9 +78,9 @@ const Pesquisa = () => {
         console.error("Mesa não encontrada.");
         return;
       }
-  
+
       const usuarioJaNaMesa = mesa.usuarioJaNaMesa;
-  
+
       if (usuarioJaNaMesa) {
         Alert.alert(
           'Sucesso',
@@ -90,7 +93,7 @@ const Pesquisa = () => {
           ],
           { cancelable: false }
         );
-  
+
       } else if (mesa.vagasDisponiveis <= 0) {
         alert('Desculpe, esta mesa está cheia. Tente outra!');
       } else {
@@ -111,12 +114,18 @@ const Pesquisa = () => {
       alert('Erro ao entrar na mesa. Tente novamente.');
     }
   };
-  
-  
 
   const handleAdicionarMesaPress = () => {
     navigation.navigate('CriarMesa');
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -152,6 +161,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f4f4f4',
     padding: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyMessage: {
     textAlign: 'center',
