@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Alert, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getMesa } from '../../services/api/mesa';
 import { listarUsuariosDaMesa } from '../../services/api/usuariomesa';
 import { enviarMensagem, listarMensagens } from '../../services/api/mensagem';
 import { fetchUserData } from '../../services/utils/auth';
+import { sairDaMesa, mostrarUsuario } from '../../services/api/usuario';
 import { useNavigation } from '@react-navigation/native';
 
 export default function Chat({ route }) {
@@ -95,7 +96,27 @@ export default function Chat({ route }) {
   const handleEditMesa = () => {
     navigation.navigate('EditarMesa', { mesa: mesa });
   };
-  
+
+  const handleSairDaMesa = async () => {
+    try {
+      await sairDaMesa(mesa.id);
+      navigation.navigate('PerfilUsuario');
+    } catch (error) {
+      console.error('Erro ao sair da mesa:', error);
+      Alert.alert('Erro', 'Não foi possível sair da mesa.');
+    }
+  };
+
+  const handleViewProfile = async (userId) => {
+    try {
+      
+      navigation.navigate(`PerfilOutro`, userId)
+      
+    } catch (error) {
+      console.error('Erro ao buscar dados do usuário:', error);
+      Alert.alert('Erro', 'Não foi possível carregar o perfil do usuário.');
+    }
+  };
 
   const renderMessageItem = ({ item }) => {
     const authorName = item.autor === eu ? 'Eu' : findAuthorName(item.autor);
@@ -113,10 +134,19 @@ export default function Chat({ route }) {
       <View style={styles.participantsContainer}>
         <Text style={styles.participantsTitle}>Participantes</Text>
         {participants.map((participant, index) => (
-          <View key={index} style={styles.participantItem}>
+          <TouchableOpacity
+            key={index}
+            style={styles.participantItem}
+            onPress={() => handleViewProfile(participant.usuario.id)}
+          >
             <Text style={styles.participantName}>{participant.usuario.nome}</Text>
-          </View>
+          </TouchableOpacity>
         ))}
+        <Button
+          title="Sair da Mesa"
+          onPress={handleSairDaMesa}
+          color="#8B0000"
+        />
       </View>
     );
   };

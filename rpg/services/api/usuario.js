@@ -59,6 +59,7 @@ export const listarUsuarios = async () => {
   return await api.get("/usuarios");
 };
 
+
 export const getUsuarioPorId = async (id) => {
   return await api.get(`/usuario/${id}`);
 };
@@ -67,13 +68,13 @@ export const entrarNaMesa = async (mesaId) => {
   try {
     // Obtenha o token do AsyncStorage
     const token = await AsyncStorage.getItem('BeholderToken');
-
+    
     // Verifique se há um token antes de fazer a solicitação
     if (!token) {
       alert('É necessário estar logado para entrar em uma mesa');
       return;
     }
-
+    
     // Configure o cabeçalho com o token
     const config = {
       headers: {
@@ -81,18 +82,54 @@ export const entrarNaMesa = async (mesaId) => {
       },
       withCredentials: true,
     };
-
+    
     const response = await api.post(
       `/usuarios/entrar-na-mesa/${mesaId}`,
       null,
       config
     );
-
+    
     return response;
   } catch (error) {
     console.error('Erro ao entrar na mesa:', error);
     throw error;
   }
+};
+
+export const sairDaMesa = async (mesaId) => {
+  try {
+    // Obtenha o token do AsyncStorage
+    const token = await AsyncStorage.getItem('BeholderToken');
+    
+    // Verifique se há um token antes de fazer a solicitação
+    if (!token) {
+      alert('É necessário estar logado para para sair da mesa');
+      return;
+    }
+    
+    // Configure o cabeçalho com o token
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    };
+    
+    const response = await api.post(
+      `/usuarios/sair-da-mesa/${mesaId}`,
+      null,
+      config
+    );
+    
+    return response;
+  } catch (error) {
+    console.error('Erro ao sair na mesa:', error);
+    throw error;
+  } 
+};
+
+export const mostrarUsuario = async (id) => {
+  return await api.get(`/usuario/${id}`);
 };
 
 export const editarPerfil = async (camposEditados) => {

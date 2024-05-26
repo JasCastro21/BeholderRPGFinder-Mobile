@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchUserData } from '../../services/utils/auth';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import chu1 from '../../img/7.png';
 import fundo1 from '../../img/chu3.png';
+import { mostrarUsuario } from '../../services/api/usuario';
 
 const posts = [
   {
@@ -17,21 +16,23 @@ const posts = [
   },
 ];
 
-const ConteudoPerfil = () => {
+const PerfilOutro = () => {
   const [userData, setUserData] = useState(null);
   const navigation = useNavigation();
+  const route = useRoute();
+  const  userId  = route.params;
 
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        const userData = await fetchUserData();
-        setUserData(userData);
+        const user = await mostrarUsuario(userId);
+        setUserData(user.data[0]);
       } catch (error) {
         console.error("Erro ao carregar os dados do usuário:", error);
       }
     };
     loadUserData();
-  }, []);
+  }, [userId]);
 
   const renderPost = ({ item }) => (
     <View style={styles.postContainer}>
@@ -45,12 +46,6 @@ const ConteudoPerfil = () => {
     </View>
   );
 
-  const handleEditProfile = () => {
-    if (userData) {
-      navigation.navigate('EditarPerfil', { id: userData.id });
-    }
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -61,9 +56,6 @@ const ConteudoPerfil = () => {
           <Text style={styles.xp}>XP: {userData ? userData.xp : 0}</Text>
           <Text style={styles.description}>{userData ? userData.descricao : ""}</Text>
         </View>
-        <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-          <Text style={styles.editButtonText}>Editar Perfil</Text>
-        </TouchableOpacity>
       </View>
       <FlatList
         data={posts}
@@ -111,14 +103,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
   },
-  editButton: {
-    backgroundColor: '#d32f2f',
-    padding: 8,
-    borderRadius: 4,
-  },
-  editButtonText: {
-    color: '#fff',
-  },
   postsList: {
     padding: 16,
   },
@@ -141,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConteudoPerfil;
+export default PerfilOutro;

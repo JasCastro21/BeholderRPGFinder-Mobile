@@ -18,6 +18,7 @@ import Conversa from './screens/Conversa';
 import CriarMesa from './components/CriarMesa';
 import EditarMesa from './screens/EditarMesa';
 import EditarPerfil from './screens/EditarPerfil';
+import PerfilOutro from './screens/PerfilOutro';
 
 const Stack = createStackNavigator();
 
@@ -66,6 +67,7 @@ export default function App() {
         <Stack.Screen name="CriarMesa" component={CriarMesa} options={{ headerShown: true }} />
         <Stack.Screen name="EditarMesa" component={EditarMesa} options={{ headerShown: true }} />
         <Stack.Screen name="EditarPerfil" component={EditarPerfil} options={{ headerShown: true }} />
+        <Stack.Screen name="PerfilOutro" component={PerfilOutro} options={{ headerShown: true }} />
 
       </Stack.Navigator>
     </NavigationContainer>
