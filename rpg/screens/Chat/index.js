@@ -122,7 +122,6 @@ export default function Chat({ route }) {
               const mesaId = mesa.id;
               await sairDaMesa(mesaId);
               setIsInMesa(false); 
-              setMesa([])
               navigation.navigate('Pesquisa');
             }
           }
