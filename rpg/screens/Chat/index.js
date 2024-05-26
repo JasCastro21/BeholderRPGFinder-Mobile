@@ -70,7 +70,7 @@ export default function Chat({ route }) {
 
   const findAuthorName = (authorId) => {
     const author = participants.find(participant => participant.usuario.id === authorId);
-    return author ? author.usuario.nome : 'Desconhecido';
+    return author ? author.usuario.nome : 'Usuário Removido';
   };
 
   const fetchMessages = async (mesaId) => {
