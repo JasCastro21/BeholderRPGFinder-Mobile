@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
-import DatePicker from 'react-native-date-picker';
+import { Dropdown } from 'react-native-element-dropdown';
 import { criarMesa } from '../../services/api/mesa';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -16,14 +15,14 @@ const CriarMesa = () => {
   const [horario, setHorario] = useState('');
   const [periodo, setPeriodo] = useState('Diária');
   const [dia, setDia] = useState('');
-  const [preco, setPreco] = useState('');
+  const [preco, setPreco] = useState('Grátis');
   const [vagas, setVagas] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleSubmit = async () => {
-  
+
     let diaValue = periodo === 'Diária' ? 'Diária' : dia;
-  
+
     const payload = {
       titulo,
       subtitulo,
@@ -36,13 +35,13 @@ const CriarMesa = () => {
       preco: preco === 'Grátis' ? 0 : parseInt(preco, 10),
       vagas: parseInt(vagas, 10) + 1
     };
-  
+
     try {
       const token = await AsyncStorage.getItem("BeholderToken");
       if (!token) {
         throw new Error("Token não encontrado");
       }
-  
+
       const response = await criarMesa(payload, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -51,14 +50,14 @@ const CriarMesa = () => {
 
       const mesaId = response.data.mesa.data[0].id;
       console.log("response criar mesa: ", response)
-  
+
       Alert.alert(
         'Sucesso',
         'Mesa criada com sucesso!',
         [
           {
             text: 'Continuar',
-            onPress: () => navigation.navigate('Chat', {mesaId}),
+            onPress: () => navigation.navigate('Chat', { mesaId }),
           },
         ],
         { cancelable: false }
@@ -88,7 +87,7 @@ const CriarMesa = () => {
     label: `${i.toString().padStart(2, '0')}:00`,
     value: `${i.toString().padStart(2, '0')}:00:00`
   }));
-
+  
   const precos = [
     { label: 'Grátis', value: 'Grátis' },
     { label: 'R$ 1', value: '1' },
@@ -101,129 +100,162 @@ const CriarMesa = () => {
     value: (i + 1).toString()
   }));
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.label}>Título</Text>
-      <TextInput style={styles.input} value={titulo} onChangeText={setTitulo} />
+  return<ScrollView contentContainerStyle={styles.container}>
+  <Text style={styles.label}>Título</Text>
+  <TextInput style={styles.input} value={titulo} onChangeText={setTitulo} />
 
-      <Text style={styles.label}>Subtítulo</Text>
-      <TextInput style={styles.input} value={subtitulo} onChangeText={setSubtitulo} />
+  <Text style={styles.label}>Subtítulo</Text>
+  <TextInput style={styles.input} value={subtitulo} onChangeText={setSubtitulo} />
 
-      <Text style={styles.label}>Sistema</Text>
-      <TextInput style={styles.input} value={sistema} onChangeText={setSistema} />
+  <Text style={styles.label}>Sistema</Text>
+  <TextInput style={styles.input} value={sistema} onChangeText={setSistema} />
 
-      <Text style={styles.label}>Descrição</Text>
-      <TextInput style={styles.input} value={descricao} onChangeText={setDescricao} multiline />
+  <Text style={styles.label}>Descrição</Text>
+  <TextInput style={styles.input} value={descricao} onChangeText={setDescricao} multiline />
 
-      <Text style={styles.label}>Horário</Text>
-      <RNPickerSelect
-        onValueChange={setHorario}
-        items={horarios}
-        style={pickerSelectStyles}
+  <Text style={styles.label}>Horário</Text>
+  <Dropdown
+    data={horarios}
+    labelField="label"
+    valueField="value"
+    placeholder="Selecione"
+    value={horario}
+    onChange={item => setHorario(item.value)}
+    style={styles.dropdown}
+    selectedTextStyle={styles.selectedText}
+    placeholderStyle={styles.placeholderText}
+    inputContainerStyle={styles.inputContainer}
+  />
+
+  <Text style={styles.label}>Período</Text>
+  <Dropdown
+    data={[
+      { label: 'Diária', value: 'Diária' },
+      { label: 'Semanal', value: 'Semanal' },
+      { label: 'Mensal', value: 'Mensal' },
+    ]}
+    labelField="label"
+    valueField="value"
+    placeholder="Selecione"
+    value={periodo}
+    onChange={item => {
+      setPeriodo(item.value);
+      // Update dia only if relevant to the new periodo
+      if (item.value !== 'Semanal') setDia('');
+    }}
+    style={styles.dropdown}
+    selectedTextStyle={styles.selectedText}
+    placeholderStyle={styles.placeholderText}
+    inputContainerStyle={styles.inputContainer}
+  />
+
+  {periodo === 'Semanal' && (
+    <>
+      <Text style={styles.label}>Dia da Semana</Text>
+      <Dropdown
+        data={diasSemana}
+        labelField="label"
+        valueField="value"
+        placeholder="Selecione"
+        value={dia}
+        onChange={item => setDia(item.value)}
+        style={styles.dropdown}
+        selectedTextStyle={styles.selectedText}
+        placeholderStyle={styles.placeholderText}
+        inputContainerStyle={styles.inputContainer}
       />
+    </>
+  )}
 
-      <Text style={styles.label}>Período</Text>
-      <RNPickerSelect
-        onValueChange={(value) => {
-          setPeriodo(value);
-          if (value !== 'Semanal') setDia('');
-        }}
-        items={[
-          { label: 'Diária', value: 'Diária' },
-          { label: 'Semanal', value: 'Semanal' },
-          { label: 'Mensal', value: 'Mensal' }
-        ]}
-        style={pickerSelectStyles}
+  {periodo === 'Mensal' && (
+    <>
+      <Text style={styles.label}>Dia do Mês</Text>
+      <Dropdown
+        data={diasMes}
+        labelField="label"
+        valueField="value"
+        placeholder="Selecione"
+        value={dia}
+        onChange={item => setDia(item.value)}
+        style={styles.dropdown}
+        selectedTextStyle={styles.selectedText}
+        placeholderStyle={styles.placeholderText}
+        inputContainerStyle={styles.inputContainer}
       />
+    </>
+  )}
 
-      {periodo === 'Semanal' && (
-        <>
-          <Text style={styles.label}>Dia da Semana</Text>
-          <RNPickerSelect
-            onValueChange={setDia}
-            items={diasSemana}
-            style={pickerSelectStyles}
-          />
-        </>
-      )}
+  <Text style={styles.label}>Preço</Text>
+  <Dropdown
+    data={precos}
+    labelField="label"
+    valueField="value"
+    placeholder="Selecione"
+    value={preco}
+    onChange={item => setPreco(item.value)}
+    style={styles.dropdown}
+    selectedTextStyle={styles.selectedText}
+    placeholderStyle={styles.placeholderText}
+    inputContainerStyle={styles.inputContainer}
+  />
 
-      {periodo === 'Mensal' && (
-        <>
-          <Text style={styles.label}>Dia do Mês</Text>
-          <RNPickerSelect
-            onValueChange={setDia}
-            items={diasMes}
-            style={pickerSelectStyles}
-          />
-        </>
-      )}
+  <Text style={styles.label}>Vagas</Text>
+  <Dropdown
+    data={vagasOptions}
+    labelField="label"
+    valueField="value"
+    placeholder="Selecione"
+    value={vagas}
+    onChange={item => setVagas(item.value)}
+    style={styles.dropdown}
+    selectedTextStyle={styles.selectedText}
+    placeholderStyle={styles.placeholderText}
+    inputContainerStyle={styles.inputContainer}
+  />
 
-      <Text style={styles.label}>Preço</Text>
-      <RNPickerSelect
-        onValueChange={setPreco}
-        items={precos}
-        style={pickerSelectStyles}
-      />
-
-      <Text style={styles.label}>Vagas</Text>
-      <RNPickerSelect
-        onValueChange={setVagas}
-        items={vagasOptions}
-        style={pickerSelectStyles}
-      />
-
-      <View style={styles.buttonContainer}>
-        <Button title="Criar Mesa" onPress={handleSubmit} color="#8B0000" />
-</View>
+  <View style={styles.buttonContainer}>
+    <Button title="Criar Mesa" onPress={handleSubmit} color="#8B0000" />
+  </View>
 </ScrollView>
-);
 };
 
 const styles = StyleSheet.create({
-container: {
-padding: 20,
-},
-label: {
-marginTop: 10,
-fontSize: 16,
-fontWeight: 'bold'
-},
-input: {
-borderWidth: 1,
-borderColor: '#ccc',
-padding: 10,
-marginTop: 5,
-borderRadius: 5
-},
-buttonContainer: {
-marginTop: 20,
-marginBottom: 20
-}
-});
-
-const pickerSelectStyles = StyleSheet.create({
-inputIOS: {
-fontSize: 16,
-paddingVertical: 12,
-paddingHorizontal: 10,
-borderWidth: 1,
-borderColor: 'gray',
-borderRadius: 4,
-color: 'black',
-paddingRight: 30,
-marginTop: 5
-},
-inputAndroid: {
-fontSize: 16,
-paddingHorizontal: 10,
-paddingVertical: 8,
-borderWidth: 0.5,
-borderColor: 'purple',
-borderRadius: 8,
-color: 'black',
-paddingRight: 30,
-marginTop: 5
-}
+  container: {
+    padding: 20,
+  },
+  label: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    marginTop: 5,
+    borderRadius: 5,
+  },
+  dropdown: {
+    marginTop: 5,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
+  selectedText: {
+    fontSize: 16,
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: '#ccc',
+  },
+  inputContainerStyle: {
+    borderBottomWidth: 0,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
 });
 
 export default CriarMesa;

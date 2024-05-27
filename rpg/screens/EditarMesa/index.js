@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
+import { Dropdown } from 'react-native-element-dropdown';
 import { editarMesa } from '../../services/api/mesa';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -12,7 +12,7 @@ const EditarMesa = ({ route }) => {
   const [subtitulo, setSubtitulo] = useState(route.params.mesa.subtitulo);
   const [sistema, setSistema] = useState(route.params.mesa.sistema);
   const [descricao, setDescricao] = useState(route.params.mesa.descricao);
-  const [data, setData] = useState(route.params.mesa.data); 
+  const [data, setData] = useState(route.params.mesa.data);
   const [horario, setHorario] = useState(route.params.mesa.horario);
   const [periodo, setPeriodo] = useState(route.params.mesa.periodo);
   const [dia, setDia] = useState(route.params.mesa.dia);
@@ -26,18 +26,18 @@ const EditarMesa = ({ route }) => {
       id: route.params.mesa.id,
       titulo,
       subtitulo,
-      sistema,  
+      sistema,
       descricao,
       data,
       horario,
       periodo,
-      dia
+      dia,
     };
 
-    console.log("____________________________________")
-    console.log("PAYLOAD editar mesa")
-    console.log(payload)
-    console.log("____________________________________")
+    console.log("____________________________________");
+    console.log("PAYLOAD editar mesa");
+    console.log(payload);
+    console.log("____________________________________");
 
     // Função para remover propriedades vazias do payload
     function removerPropriedadesVazias(payload) {
@@ -60,8 +60,8 @@ const EditarMesa = ({ route }) => {
 
       const response = await editarMesa(route.params.mesa.id, userData.id, payloadLimpo, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       Alert.alert(
@@ -83,7 +83,7 @@ const EditarMesa = ({ route }) => {
 
   const diasMes = Array.from({ length: 31 }, (_, i) => ({
     label: (i + 1).toString(),
-    value: (i + 1).toString()
+    value: (i + 1).toString(),
   }));
 
   const diasSemana = [
@@ -98,137 +98,157 @@ const EditarMesa = ({ route }) => {
 
   const horarios = Array.from({ length: 24 }, (_, i) => ({
     label: `${i.toString().padStart(2, '0')}:00`,
-    value: `${i.toString().padStart(2, '0')}:00:00`
+    value: `${i.toString().padStart(2, '0')}:00:00`,
   }));
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.label}>Título</Text>
-      <TextInput style={styles.input} value={titulo} onChangeText={setTitulo} />
-
-      <Text style={styles.label}>Subtítulo</Text>
-      <TextInput style={styles.input} value={subtitulo} onChangeText={setSubtitulo} />
-
-      <Text style={styles.label}>Sistema</Text>
-      <TextInput style={styles.input} value={sistema} onChangeText={setSistema} />
-
-      <Text style={styles.label}>Descrição</Text>
-      <TextInput style={styles.input} value={descricao} onChangeText={setDescricao} multiline />
-
-      <Text style={styles.label}>Preço</Text>
-      <View style={styles.nonEditableField}>
-        <Text>{preco}</Text>
-      </View>
-
-      <Text style={styles.label}>Vagas</Text>
-      <View style={styles.nonEditableField}>
-        <Text>{vagas}</Text>
-      </View>
-
-      {(periodo === 'Mensal') && (
-        <>
-          <Text style={styles.label}>Dia do Mês</Text>
-          <RNPickerSelect
-            onValueChange={(value) => setDia(value)} 
-            items={diasMes}
-            style={pickerSelectStyles}
-          />
-        </>
-      )}
-
-      <Text style={styles.label}>Horário</Text>
-      <RNPickerSelect
-        onValueChange={setHorario}
-        items={horarios}
-        style={pickerSelectStyles}
-      />
-
-      <Text style={styles.label}>Período</Text>
-      <RNPickerSelect
-        onValueChange={(value) => {
-          setPeriodo(value);
-          if (value === 'Diária') setDia('');
-          if (value !== 'Semanal') setDia('');
-        }}
-        items={[
-          { label: 'Diária', value: 'Diária' },
-          { label: 'Semanal', value: 'Semanal' },
-          { label: 'Mensal', value: 'Mensal' }
-        ]}
-        style={pickerSelectStyles}
-      />
-
-      {periodo === 'Semanal' && (
-        <>
-          <Text style={styles.label}>Dia da Semana</Text>
-          <RNPickerSelect
-            onValueChange={setDia}
-            items={diasSemana}
-            style={pickerSelectStyles}
-          />
-        </>
-      )}
-
-      <View style={styles.buttonContainer}>
-        <Button title="Salvar" onPress={handleSubmit} color="#8B0000" />
-      </View>
-    </ScrollView>
+    <ScrollView contentContainerStyle={styles.container}><Text style={styles.label}>Título</Text>
+    <TextInput style={styles.input} value={titulo} onChangeText={setTitulo} />
+  
+    <Text style={styles.label}>Subtítulo</Text>
+    <TextInput style={styles.input} value={subtitulo} onChangeText={setSubtitulo} />
+  
+    <Text style={styles.label}>Sistema</Text>
+    <TextInput style={styles.input} value={sistema} onChangeText={setSistema} />
+  
+    <Text style={styles.label}>Descrição</Text>
+    <TextInput style={styles.input} value={descricao} onChangeText={setDescricao} multiline />
+  
+    <Text style={styles.label}>Preço</Text>
+    <View style={styles.nonEditableField}>
+      <Text>{preco}</Text>
+    </View>
+  
+    <Text style={styles.label}>Vagas</Text>
+    <View style={styles.nonEditableField}>
+      <Text>{vagas}</Text>
+    </View>
+  
+    {(periodo === 'Mensal') && (
+      <>
+        <Text style={styles.label}>Dia do Mês</Text>
+        <Dropdown
+          data={diasMes}
+          labelField="label"
+          valueField="value"
+          placeholder="Selecione"
+          value={dia}
+          onChange={item => setDia(item.value)}
+          style={styles.dropdown}
+          selectedTextStyle={styles.selectedText}
+          placeholderStyle={styles.placeholderText}
+          inputContainerStyle={styles.inputContainer}
+        />
+      </>
+    )}
+  
+    <Text style={styles.label}>Horário</Text>
+    <Dropdown
+      data={horarios}
+      labelField="label"
+      valueField="value"
+      placeholder="Selecione"
+      value={horario}
+      onChange={item => setHorario(item.value)}
+      style={styles.dropdown}
+      selectedTextStyle={styles.selectedText}
+      placeholderStyle={styles.placeholderText}
+      inputContainerStyle={styles.inputContainer}
+    />
+  
+    <Text style={styles.label}>Período</Text>
+    <Dropdown
+      data={[
+        { label: 'Diária', value: 'Diária' },
+        { label: 'Semanal', value: 'Semanal' },
+        { label: 'Mensal', value: 'Mensal' },
+      ]}
+      labelField="label"
+      valueField="value"
+      placeholder="Selecione"
+      value={periodo}
+      onChange={item => {
+        setPeriodo(item.value);
+        // Update dia only if relevant to the new periodo
+        if (item.value === 'Diária') {
+          setDia('');
+        }
+      }}
+      style={styles.dropdown}
+      selectedTextStyle={styles.selectedText}
+      placeholderStyle={styles.placeholderText}
+      inputContainerStyle={styles.inputContainer}
+    />
+  
+    {periodo === 'Semanal' && (
+      <>
+        <Text style={styles.label}>Dia da Semana</Text>
+        <Dropdown
+          data={diasSemana}
+          labelField="label"
+          valueField="value"
+          placeholder="Selecione"
+          value={dia}
+          onChange={item => setDia(item.value)}
+          style={styles.dropdown}
+          selectedTextStyle={styles.selectedText}
+          placeholderStyle={styles.placeholderText}
+          inputContainerStyle={styles.inputContainer}
+        />
+      </>
+    )}
+  
+    <View style={styles.buttonContainer}>
+      <Button title="Salvar" onPress={handleSubmit} color="#8B0000" />
+    </View>
+  </ScrollView>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-  label: {
-    marginTop: 10,
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginTop: 5,
-    borderRadius: 5
-  },
-  nonEditableField: {
-    borderWidth: 1,
-    borderColor: '#c4c4c4',
-    padding: 10,
-    marginTop: 5,
-    borderRadius: 5,
-    backgroundColor: '#c4c4c4',
-  },
-  buttonContainer: {
-    marginTop: 20,
-    marginBottom: 20
-  }
-});
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    color: 'black',
-    paddingRight: 30,
-    marginTop: 5
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'purple',
-    borderRadius: 8,
-    color: 'black',
-    paddingRight: 30,
-    marginTop: 5
-  }
-});
-
-export default EditarMesa;
+  };
+  
+  const styles = StyleSheet.create({
+    container: {
+      padding: 20,
+    },
+    label: {
+      marginTop: 10,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: '#ccc',
+      padding: 10,
+      marginTop: 5,
+      borderRadius: 5,
+    },
+    nonEditableField: {
+      borderWidth: 1,
+      borderColor: '#c4c4c4',
+      padding: 10,
+      marginTop: 5,
+      borderRadius: 5,
+      backgroundColor: '#c4c4c4',
+    },buttonContainer: {
+      marginTop: 20,
+      marginBottom: 20,
+    },
+    dropdown: {
+      marginTop: 5,
+      padding: 12,
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 5,
+    },
+    selectedText: {
+      fontSize: 16,
+    },
+    placeholderText: {
+      fontSize: 16,
+      color: '#ccc',
+    },
+    inputContainer: {
+      borderBottomWidth: 0,
+    },
+  });
+  
+  export default EditarMesa;
