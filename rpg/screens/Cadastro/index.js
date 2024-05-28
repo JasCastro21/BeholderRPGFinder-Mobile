@@ -8,8 +8,8 @@ const Cadastro = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [birthdate, setBirthdate] = useState('');
+  const [nome, setNome] = useState('');
+  const [datanascimento, setDataNascimento] = useState('');
 
   const handleSignIn = () => {
     navigation.navigate('Login');
@@ -17,34 +17,55 @@ const Cadastro = () => {
 
   const handleSignUp = async () => {
     try {
-      const data = {
-        nome: username,
-        email: email,
-        senha: password,
-        datanascimento: birthdate
-      };
-      console.log(data)
-      await criarNovoUsuario(data);
-      Alert.alert(
-        "Sucesso!",
-        "Usuário cadastrado com sucesso.",
-        [
-          { text: "OK", onPress: () => navigation.navigate('Login') }
-        ],
-        { cancelable: false }
-      );
+      const response = await criarNovoUsuario({ email, senha: password, nome, datanascimento });
+      // Verifica se a resposta da API é bem-sucedida
+      if (response.status === 200) {
+        // Exibe uma mensagem de sucesso ou redireciona para outra tela
+        console.log("Usuário criado com sucesso:", response.data);
+        navigation.navigate('Login');
+      } else {
+        // Exibe uma mensagem de erro caso a resposta não seja 200
+        console.log("Erro ao criar usuário:", response.data);
+        Alert.alert(
+          "Erro ao criar usuário",
+          "Não foi possível criar o usuário. Por favor, tente novamente mais tarde.",
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ],
+          { cancelable: false }
+        );
+      }
     } catch (error) {
-      console.error("Erro ao cadastrar o usuário:", error);
-      Alert.alert(
-        "Erro ao cadastrar",
-        "Ocorreu um erro ao cadastrar o usuário. Por favor, tente novamente mais tarde.",
-        [
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ],
-        { cancelable: false }
-      );
+      // Exibe uma mensagem de erro em caso de falha na chamada à API
+      if (error.response && error.response.data && error.response.data.errors) {
+        // Se a resposta da API contiver uma matriz de erros, compõe os erros em uma lista
+        const errorMessages = error.response.data.errors.map(error => error.msg);
+        const errorMessageList = errorMessages.join("\n"); // Compondo os erros em uma lista
+        Alert.alert(
+          "Erro ao criar usuário",
+          errorMessageList, // Exibindo a lista de erros
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ],
+          { cancelable: false }
+        );
+      } else {
+        // Caso contrário, exibe uma mensagem de erro genérica
+        console.log("Erro ao criar usuário:", error);
+        Alert.alert(
+          "Erro ao criar usuário",
+          "Não foi possível criar o usuário. Por favor, verifique sua conexão com a internet e tente novamente.",
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ],
+          { cancelable: false }
+        );
+      }
     }
   };
+  
+  
+  
 
   return (
     <KeyboardAvoidingView
@@ -64,7 +85,7 @@ const Cadastro = () => {
                   style={styles.input}
                   placeholder="Nome de usuário"
                   autoCapitalize="none"
-                  onChangeText={(text) => setUsername(text)}
+                  onChangeText={(text) => setNome(text)}
                 />
               </View>
               <View style={styles.inputContainer}>
@@ -73,7 +94,7 @@ const Cadastro = () => {
                   style={styles.input}
                   placeholder="Data de Nascimento"
                   keyboardType="numeric"
-                  onChangeText={(text) => setBirthdate(text)}
+                  onChangeText={(text) => setDataNascimento(text)}
                 />
               </View>
               <View style={styles.inputContainer}>
