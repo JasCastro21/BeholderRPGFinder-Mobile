@@ -19,14 +19,17 @@ export const getMesa = async (id) => {
 export const editarMesa = async (mesaId, userId, camposEditados) => {
   try {
     const response = await api.patch(`/mesa/${mesaId}`, { userId, ...camposEditados });
-    return response.data; // Se a edição for bem-sucedida, a API retorna os dados atualizados
+    return response; // Retorna a resposta completa para permitir verificação de status no handleSubmit
   } catch (error) {
     if (error.response && error.response.data) {
-      // Se houver dados de resposta no erro, significa que a API retornou detalhes do erro
-      throw new Error(`Erro ao editar a mesa: ${error.response.data.message}`);
+      // Se houver dados de resposta no erro, lança a resposta completa
+      throw error.response; // Lança o erro da resposta para ser tratado no handleSubmit
     } else {
       // Caso contrário, trata-se de um erro genérico
       throw new Error(`Erro ao editar a mesa: ${error.message}`);
     }
   }
 };
+
+
+

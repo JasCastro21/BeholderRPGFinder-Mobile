@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { editarMesa } from '../../services/api/mesa';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,20 +8,48 @@ import { fetchUserData } from '../../services/utils/auth';
 
 const EditarMesa = ({ route }) => {
   const navigation = useNavigation();
-  const [titulo, setTitulo] = useState(route.params.mesa.titulo);
-  const [subtitulo, setSubtitulo] = useState(route.params.mesa.subtitulo);
-  const [sistema, setSistema] = useState(route.params.mesa.sistema);
-  const [descricao, setDescricao] = useState(route.params.mesa.descricao);
-  const [data, setData] = useState(route.params.mesa.data);
-  const [horario, setHorario] = useState(route.params.mesa.horario);
-  const [periodo, setPeriodo] = useState(route.params.mesa.periodo);
-  const [dia, setDia] = useState(route.params.mesa.dia);
-  const [preco] = useState(route.params.mesa.preco);
-  const [vagas] = useState(route.params.mesa.vagas);
+  const [titulo, setTitulo] = useState('');
+  const [subtitulo, setSubtitulo] = useState('');
+  const [sistema, setSistema] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [data, setData] = useState('');
+  const [horario, setHorario] = useState('');
+  const [periodo, setPeriodo] = useState('');
+  const [dia, setDia] = useState('');
+  const [preco, setPreco] = useState('');
+  const [vagas, setVagas] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userData = await fetchUserData();
+        console.log('ID do usuário fetchado:', userData.id);
+
+        setTitulo(route.params.mesa.titulo);
+        setSubtitulo(route.params.mesa.subtitulo);
+        setSistema(route.params.mesa.sistema);
+        setDescricao(route.params.mesa.descricao);
+        setData(route.params.mesa.data);
+        setHorario(route.params.mesa.horario);
+        setPeriodo(route.params.mesa.periodo);
+        setDia(route.params.mesa.dia);
+        setPreco(route.params.mesa.preco);
+        setVagas(route.params.mesa.vagas);
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Erro ao carregar dados da mesa:', error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleSubmit = async () => {
     const userData = await fetchUserData();
-
+  
     const payload = {
       id: route.params.mesa.id,
       titulo,
@@ -32,55 +60,57 @@ const EditarMesa = ({ route }) => {
       horario,
       periodo,
       dia,
+      preco: route.params.mesa.preco,
+      vagas: route.params.mesa.vagas,
+      precoOriginal: route.params.mesa.preco,
+      vagasOriginal: route.params.mesa.vagas,
     };
-
-    console.log("____________________________________");
-    console.log("PAYLOAD editar mesa");
-    console.log(payload);
-    console.log("____________________________________");
-
-    // Função para remover propriedades vazias do payload
-    function removerPropriedadesVazias(payload) {
-      for (const key in payload) {
-        if (payload[key] === '') {
-          delete payload[key];
-        }
-      }
-      return payload;
-    }
-
-    // Removendo propriedades vazias do payload antes de enviar
-    const payloadLimpo = removerPropriedadesVazias(payload);
-
+  
     try {
       const token = await AsyncStorage.getItem("BeholderToken");
       if (!token) {
         throw new Error("Token não encontrado");
       }
-
-      const response = await editarMesa(route.params.mesa.id, userData.id, payloadLimpo, {
+  
+      const response = await editarMesa(route.params.mesa.id, userData.id, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      Alert.alert(
-        'Sucesso',
-        'Mesa editada com sucesso!',
-        [
-          {
-            text: 'Continuar',
-            onPress: () => navigation.goBack(),
-          },
-        ],
-        { cancelable: false }
-      );
+  
+      if (response.status === 200 || response.status === 204) {
+        Alert.alert(
+          'Sucesso',
+          'Mesa editada com sucesso!',
+          [
+            {
+              text: 'Continuar',
+              onPress: () => {
+                // Atualizar o estado para recarregar a tela de Chat
+                setIsLoading(true);
+                // Navegar de volta para a tela de Chat
+                const mesaId = route.params.mesa.id;
+                navigation.navigate('Chat', { mesaId });
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+        return;
+      }
+  
+      const errorMessage = response.data && response.data.message ? response.data.message : 'Erro desconhecido';
+      Alert.alert('Erro', errorMessage);
     } catch (error) {
-      console.error("Erro ao editar a mesa:", error);
-      Alert.alert('Erro', 'Houve um problema ao editar a mesa.');
+      if (error.data && error.data.errors) {
+        const errorMessage = error.data.errors.map(err => err.msg).join('\n');
+        Alert.alert('Erro de validação', errorMessage);
+      } else {
+        Alert.alert('Erro', 'Houve um problema ao editar a mesa.');
+      }
     }
   };
-
+  
   const diasMes = Array.from({ length: 31 }, (_, i) => ({
     label: (i + 1).toString(),
     value: (i + 1).toString(),
@@ -100,6 +130,14 @@ const EditarMesa = ({ route }) => {
     label: `${i.toString().padStart(2, '0')}:00`,
     value: `${i.toString().padStart(2, '0')}:00:00`,
   }));
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}><Text style={styles.label}>Título</Text>
