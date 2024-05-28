@@ -17,12 +17,10 @@ const CriarMesa = () => {
   const [dia, setDia] = useState('');
   const [preco, setPreco] = useState('Grátis');
   const [vagas, setVagas] = useState('');
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleSubmit = async () => {
-
     let diaValue = periodo === 'Diária' ? 'Diária' : dia;
-
+  
     const payload = {
       titulo,
       subtitulo,
@@ -35,22 +33,21 @@ const CriarMesa = () => {
       preco: preco === 'Grátis' ? 0 : parseInt(preco, 10),
       vagas: parseInt(vagas, 10) + 1
     };
-
+  
     try {
       const token = await AsyncStorage.getItem("BeholderToken");
       if (!token) {
         throw new Error("Token não encontrado");
       }
-
+  
       const response = await criarMesa(payload, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-
+  
       const mesaId = response.data.mesa.data[0].id;
-      console.log("response criar mesa: ", response)
-
+  
       Alert.alert(
         'Sucesso',
         'Mesa criada com sucesso!',
@@ -63,10 +60,17 @@ const CriarMesa = () => {
         { cancelable: false }
       );
     } catch (error) {
-      console.error("Erro ao criar a mesa:", error);
-      Alert.alert('Erro', 'Houve um problema ao criar a mesa.');
+      if (error.response && error.response.data && error.response.data.errors) {
+        const apiErrors = error.response.data.errors;
+        let errorMessage = "Houve um problema ao criar a mesa:\n";
+        errorMessage += apiErrors.map((err) => `- ${err.msg}`).join("\n");
+        Alert.alert('Erro', errorMessage);
+      } else {
+        Alert.alert('Erro', 'Houve um problema ao criar a mesa.');
+      }
     }
   };
+  
 
   const diasSemana = [
     { label: 'Domingo', value: 'Domingo' },
@@ -140,7 +144,7 @@ const CriarMesa = () => {
     value={periodo}
     onChange={item => {
       setPeriodo(item.value);
-      // Update dia only if relevant to the new periodo
+
       if (item.value !== 'Semanal') setDia('');
     }}
     style={styles.dropdown}
