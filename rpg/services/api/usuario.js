@@ -4,13 +4,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchUserData } from "../utils/auth";
 
 export const criarNovoUsuario = async (data) => {
-  if (data.datanascimento) {
-    return await api.post("/usuarios", data);
-  }
+  try {
+    const userData = { ...data };
+    if (!data.datanascimento) {
+      delete userData.datanascimento;
+    }
 
-  delete data.datanascimento;
-  return await api.post("/usuarios", data);
+    const response = await api.post("/usuarios", userData);
+    return response;
+  } catch (error) {
+    console.error("Erro na solicitação:", error);
+    throw error;
+  }
 };
+
+
 
 export const autenticar = async (data) => {
   const response = await api.post(
