@@ -68,8 +68,10 @@ const ConteudoPerfil = () => {
         <View style={styles.headerText}>
           <Text style={styles.name}>{userData ? userData.nome : "Carregando..."}</Text>
           <Text style={styles.email}>{userData ? userData.email : ""}</Text>
+          <Text style={styles.email}>{userData?.datanascimento ? userData.datanascimento : ""}</Text>
           <Text style={styles.xp}>XP: {userData ? userData.xp : 0}</Text>
-          <Text style={styles.description}>{userData ? userData.descricao : ""}</Text>
+          <Text style={styles.description}>{userData?.descricao ? userData.descricao : "Sem descrição"}</Text>
+
         </View>
         <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
           <Text style={styles.editButtonText}>Editar Perfil</Text>
