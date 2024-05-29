@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchUserData } from '../../services/utils/auth';
 import { useNavigation } from '@react-navigation/native';
@@ -16,6 +16,14 @@ const posts = [
     time: '1h',
   },
 ];
+
+const formatDate = (isoDate) => {
+  const date = new Date(isoDate);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 const ConteudoPerfil = () => {
   const [userData, setUserData] = useState(null);
@@ -68,10 +76,9 @@ const ConteudoPerfil = () => {
         <View style={styles.headerText}>
           <Text style={styles.name}>{userData ? userData.nome : "Carregando..."}</Text>
           <Text style={styles.email}>{userData ? userData.email : ""}</Text>
-          <Text style={styles.email}>{userData?.datanascimento ? userData.datanascimento : ""}</Text>
+          <Text style={styles.email}>Desde: {userData?.criado_em ? formatDate(userData.criado_em) : ""}</Text>
           <Text style={styles.xp}>XP: {userData ? userData.xp : 0}</Text>
           <Text style={styles.description}>{userData?.descricao ? userData.descricao : "Sem descrição"}</Text>
-
         </View>
         <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
           <Text style={styles.editButtonText}>Editar Perfil</Text>
@@ -88,7 +95,6 @@ const ConteudoPerfil = () => {
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
-
     </View>
   );
 };
@@ -170,8 +176,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
-  
-  
 });
 
 export default ConteudoPerfil;
