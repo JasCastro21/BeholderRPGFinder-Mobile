@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Ionicons from "react-native-vector-icons/Ionicons";  // Importando novos ícones
 import { criarNovoUsuario } from "../../services/api/usuario";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -35,7 +36,7 @@ export default function Cadastro() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nome, setNome] = useState("");
-  const [datanascimento, setDataNascimento] = useState(new Date());
+  const [datanascimento, setDataNascimento] = useState(null); // Começar com null
   const [validation, setValidation] = useState({
     length: false,
     uppercase: false,
@@ -56,7 +57,7 @@ export default function Cadastro() {
       Alert.alert("Erro", "A senha não atende aos requisitos.");
       return;
     }
-  
+
     try {
       const userData = {
         nome,
@@ -64,9 +65,9 @@ export default function Cadastro() {
         senha: password,
         datanascimento: formatDateForApi(datanascimento),
       };
-  
+
       const response = await criarNovoUsuario(userData);
-  
+
       if (response.status === 200) {
         Alert.alert("Sucesso", "Cadastro efetuado com sucesso!");
         navigation.navigate("Login");
@@ -109,6 +110,7 @@ export default function Cadastro() {
   };
 
   const formatDateForApi = (date) => {
+    if (!date) return "";
     const year = date.getFullYear();
     const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
     const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
@@ -193,11 +195,15 @@ export default function Cadastro() {
                     value={datanascimento ? formatDateForApi(datanascimento) : ""}
                   />
                 </TouchableOpacity>
+                {datanascimento && (
+                  <TouchableOpacity onPress={() => setDataNascimento(null)}>
+                    <Ionicons name="trash-outline" size={24} color="#8B0000" style={styles.trashIcon} />
+                  </TouchableOpacity>
+                )}
                 {showDatePicker && (
                   <DateTimePicker
                     testID="dateTimePicker"
                     value={datanascimento ? datanascimento : new Date()}
-                   
                     mode="date"
                     is24Hour={true}
                     display="default"
@@ -211,31 +217,44 @@ export default function Cadastro() {
                 )}
               </View>
               <View style={styles.passwordRequirements}>
-                <Text>
-                  {validation.length ? "✓" : "✕"} Pelo menos 8 caracteres
-                </Text>
+                <Ionicons
+                  name={validation.length ? "checkmark-circle" : "close-circle"}
+                  size={20}
+                  color={validation.length ? "green" : "red"}
+                />
+                <Text style={styles.requirementText}> Pelo menos 8 caracteres</Text>
               </View>
               <View style={styles.passwordRequirements}>
-                <Text>
-                  {validation.uppercase ? "✓" : "✕"} Pelo menos 1 letra maiúscula
-                </Text>
+                <Ionicons
+                  name={validation.uppercase ? "checkmark-circle" : "close-circle"}
+                  size={20}
+                  color={validation.uppercase ? "green" : "red"}
+                />
+                <Text style={styles.requirementText}> Pelo menos 1 letra maiúscula</Text>
               </View>
               <View style={styles.passwordRequirements}>
-                <Text>
-                  {validation.lowercase ? "✓" : "✕"} Pelo menos uma letra
-                  minúscula
-                </Text>
+                <Ionicons
+                  name={validation.lowercase ? "checkmark-circle" : "close-circle"}
+                  size={20}
+                  color={validation.lowercase ? "green" : "red"}
+                />
+                <Text style={styles.requirementText}> Pelo menos uma letra minúscula</Text>
               </View>
               <View style={styles.passwordRequirements}>
-                <Text>
-                  {validation.number ? "✓" : "✕"} Pelo menos um número
-                </Text>
+                <Ionicons
+                  name={validation.number ? "checkmark-circle" : "close-circle"}
+                  size={20}
+                  color={validation.number ? "green" : "red"}
+                />
+                <Text style={styles.requirementText}> Pelo menos um número</Text>
               </View>
               <View style={styles.passwordRequirements}>
-                <Text>
-                  {validation.specialChar ? "✓" : "✕"} Pelo menos um caractere
-                  especial (!@#$%^&*)
-                </Text>
+                <Ionicons
+                  name={validation.specialChar ? "checkmark-circle" : "close-circle"}
+                  size={20}
+                  color={validation.specialChar ? "green" : "red"}
+                />
+                <Text style={styles.requirementText}> Pelo menos um caractere especial (!@#$%^&*)</Text>
               </View>
               <TouchableOpacity
                 style={styles.button}
@@ -289,20 +308,29 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+    width: '100%',
+    height: 48,
   },
   input: {
     backgroundColor: "transparent",
-    paddingHorizontal: 40,
+    paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 2,
     borderColor: "#8B0000",
-    width: "100%",
+    flex: 1,
+    textAlign: "left",
+    height: '100%',
   },
   icon: {
-    position: "absolute",
-    top: 12,
-    left: 10,
+    width: 24,
+    height: 24,
+    marginRight: 10,
+  },
+  trashIcon: {
+    width: 24,
+    height: 24,
+    marginLeft: 10,
   },
   button: {
     backgroundColor: "#8B0000",
@@ -324,14 +352,22 @@ const styles = StyleSheet.create({
   },
   simpleText: {
     color: "black",
+    textAlign: "left",
   },
   linkText: {
     color: "#8B0000",
     textDecorationLine: "none",
+    textAlign: "left",
   },
   passwordRequirements: {
     flexDirection: "row",
     alignItems: "center",
     marginTop: 10,
+    width: '100%',
+  },
+  requirementText: {
+    marginLeft: 10,
+    textAlign: "left",
   },
 });
+
